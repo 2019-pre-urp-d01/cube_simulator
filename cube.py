@@ -16,7 +16,7 @@ class Cube:
         self.cell_core = 0
 
     # Convert Bit Cells' binary to Data Cell's Demical
-    def bit2dec(self, plane):
+    def Bit2Dec(self, plane):
         dec = 0
         for bitnum in range(8):
             dec += self.cell_bit[plane][bitnum] << bitnum
@@ -29,6 +29,11 @@ class Cube:
                 return ind
         return -1
 
+    # Set Static 1 Cell's value to 1
+    def StaticOne(self):
+        planenum = self.FindPlane("One")
+        self.cell_data[planenum] = 1
+
     # Store input value to input plane's data cell
     def Input(self, val):
         plane = self.FindPlane("Input")
@@ -36,7 +41,6 @@ class Cube:
             logging.error("Couldn't find input plane")
             return None
         self.cell_data[plane] = val
-
 
     # Return value from output plane's data cell
     def Output(self):
@@ -47,23 +51,40 @@ class Cube:
         return self.cell_data[plane]
 
     # Save bit cell to data cell
-    def Save(self, plane=0):
-        if plane == 0:
+    def Save(self, plane=-1):
+        if plane == -1:
             for i in range(6):
-                self.cell_data[i] = self.bit2dec(i)
+                self.cell_data[i] = self.Bit2Dec(i)
         elif plane < 6:
-            self.cell_data[plane] = self.bit2dec(plane)
+            self.cell_data[plane] = self.Bit2Dec(plane)
         else:
             logging.error("Couldn't find that plane")
             return None
 
     # Load data cell to bit cell
     def Load(self, plane=-1):
-        pass
+        if plane == -1:
+            for i in range(6):
+                for bitnum in range(8):
+                    self.cell_bit[i][bitnum] = (self.cell_data[i] >> bitnum) & 1
+        elif plane < 6:
+            for bitnum in range(8):
+                self.cell_bit[plane][bitnum] = (self.cell_data[plane] >> bitnum) & 1
+        else:
+            logging.error("Couldn't find that plane")
+            return None
 
     # Clear every cell to initial state
     def Clear(self, plane=-1):
-        pass
+        if plane == -1:
+            self.cell_data = [0]*6
+            self.cell_bit  = [[0]*8]*6
+            self.cell_core = 0
+        elif plane < 6:
+            self.cell_data[plane] = 0
+            for i in range(8):
+                self.cell_bit[plane][i] = 0
+        self.StaticOne()
 
     # Execute cell
     def Execute(self, plane=-1):

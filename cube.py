@@ -1,3 +1,5 @@
+import logging
+
 
 class Cube:
     # Cube initialization
@@ -6,16 +8,30 @@ class Cube:
         self.hyper_out = None
 
         # Cell's function of each cell
-        self.cell_func = ["Input","One","Not","Or","And","Output"]
+        self.cell_function = ["Input","One","Not","Or","And","Output"]
+        self.initial_location = [0, 0, 0, 0, 0, 0]
 
         self.cell_data = [0]*6
         self.cell_bit  = [[0]*8]*6
         self.cell_core = 0
 
+
+    # Find corresponding Plane
+    def FindPlane(self, inp):
+        for ind, val in enumerate(self.cell_function):
+            if val==inp:
+                return ind
+        return -1
+    
     # Store input value to input plane's data cell
     def Input(self, val):
-        pass
-
+        plane = self.FindPlane("Input")
+        if plane == -1:
+            logging.error("Couldn't find input plane")
+            return None
+        self.cell_data[plane] = val
+        
+        
     # Return value to input plane's data cell
     def Output(self):
         return -1

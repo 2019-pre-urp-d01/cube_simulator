@@ -84,11 +84,52 @@ class Cube:
             self.cell_data[plane] = 0
             for i in range(8):
                 self.cell_bit[plane][i] = 0
+        else:
+            logging.error("Couldn't find that plane")
         self.StaticOne()
 
     # Execute cell
     def Execute(self, plane=-1):
-        pass
+        if plane == -1:
+            var_and  = self.FindPlane("And")
+            var_or   = self.FindPlane("Or")
+            var_nand = self.FindPlane("Nand")
+            var_nor  = self.FindPlane("Nor")
+            var_xor  = self.FindPlane("Xor")
+            var_not  = self.FindPlane("Not")
+
+            if var_and != -1:
+                self.cell_data[var_and] = self.cell_data[var_and] & self.Bin2Dec(var_and)
+            if var_or != -1:
+                self.cell_data[var_or] = self.cell_data[var_or] | self.Bin2Dec(var_or)
+            if var_nand != -1:
+                self.cell_data[var_nand] = ~(self.cell_data[var_nand] & self.Bin2Dec(var_nand))
+            if var_nor != -1:
+                self.cell_data[var_nor] = ~(self.cell_data[var_nor] | self.Bin2Dec(var_nor))
+            if var_xor != -1:
+                self.cell_data[var_xor] = self.cell_data[var_xor] ^ self.Bin2Dec(var_xor)
+            if var_not != -1:
+                self.cell_data[var_not] = ~self.Bin2Dec(var_not)
+
+        elif plane < 6:
+            if self.cell_function[plane] = "Input" or "Output" or "One":
+                pass
+            elif self.cell_function[plane] = "And":
+                self.cell_data[plane] = self.cell_data[plane] & self.Bin2Dec(plane)
+            elif self.cell_function[plane] = "Or":
+                self.cell_data[plane] = self.cell_data[plane] | self.Bin2Dec(plane)
+            elif self.cell_function[plane] = "Nand":
+                self.cell_data[plane] = ~(self.cell_data[plane] & self.Bin2Dec(plane))
+            elif self.cell_function[plane] = "Nor":
+                self.cell_data[plane] = ~(self.cell_data[plane] | self.Bin2Dec(plane))
+            elif self.cell_function[plane] = "Xor":
+                self.cell_data[plane] = self.cell_data[plane] ^ self.Bin2Dec(plane)
+            elif self.cell_function[plane] = "Not":
+                self.cell_data[plane] = ~self.Bin2Dec(plane)
+
+        else:
+            logging.error("Couldn't find that plane")
+            return None
 
     # Rotate cube
     def Rotate(self):

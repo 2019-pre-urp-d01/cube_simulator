@@ -1,4 +1,5 @@
 import argparse
+import sys
 import numpy as np
 from cube import Cubes
 
@@ -25,6 +26,46 @@ parser.add_argument("-g","--gui", type=str2bool, default=False,
 
 args = parser.parse_args() #파서의 변수 지정
 
+c_list = []
+
+if args.debug_level == 0:
+    logging.basicConfig(level=logging.WARNING, \
+        format='[%(asctime)s][%(levelname)s] %(message)s',\
+        datefmt='%Y-%m-%d %H:%M:%S')
+else:
+    logging.basicConfig(level=logging.INFO, \
+        format='[%(asctime)s][%(levelname)s] %(message)s',\
+        datefmt='%Y-%m-%d %H:%M:%S', \
+        stream=sys.stdout)
+
+
+def Re_input():
+    global str_input
+    if str_input == '':
+        str_input = input()
+        Re_input()
+        #빈 입력을 받으면 계속해서 되물음(재귀함수)
+        
 
 if __name__ == "__main__":
-    c = Cubes()
+    str_input = ""
+    if args.script != "":
+        logging.info("Reading From File: %s"%CONFIG_INPUT_FILE)
+        f = open(args.script, 'r')
+        str_input = f.read()
+        f.close()
+    else:
+        logging.info("Input your script")
+        str_input = input()
+        Re_input()
+
+
+logging.info("Script Loaded with Length %d"%len(str_input))
+logging.Warning(str_input)
+
+
+             
+        
+        
+
+            

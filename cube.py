@@ -22,7 +22,7 @@ class Cube:
             if val==inp:
                 return ind
         return -1
-    
+
     # Store input value to input plane's data cell
     def Input(self, val):
         plane = self.FindPlane("Input")
@@ -30,24 +30,28 @@ class Cube:
             logging.error("Couldn't find input plane")
             return None
         self.cell_data[plane] = val
-        
-        
+
+
     # Return value to input plane's data cell
     def Output(self):
-        return -1
+        plane = self.FindPlane("Output")
+        if plane == -1:
+            logging.error("Couldn't find output plane")
+            return None
+        return self.cell_data[plane]
 
     # Save bit cell to data cell
     def Save(self, plane=-1):
         pass
-    
+
     # Load data cell to bit cell
     def Load(self, plane=-1):
         pass
-    
+
     # Clear every cell to initial state
     def Clear(self, plane=-1):
         pass
-    
+
     # Execute cell
     def Execute(self, plane=-1):
         pass
@@ -59,17 +63,17 @@ class Cube:
 
 class Cubes:
     def __init__(self, config=dict()):
-        
+
         # List of cubes
         self.cubes = list()
         # Generate One cube
         self.cube = Cube()
         self.cubes.append(self.cube)
-    
+
     # Create one cube, and set pointers
     def CreateCubeOnDirection(self, direction="in"):
         pass
-    
+
     # Exectue one command
     def Execute(self, command):
         pass

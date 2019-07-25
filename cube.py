@@ -116,7 +116,7 @@ class Cube:
 
         elif plane < 6:
             if self.cell_function[plane] = "Input" or "Output" or "One":
-                pass
+                break
             elif self.cell_function[plane] = "And":
                 self.cell_data[plane] = self.cell_data[plane] & self.Bin2Dec(plane)
             elif self.cell_function[plane] = "Or":
@@ -140,6 +140,9 @@ class Cube:
     def Rotate(self):
         pass
 
+class Cells:
+    def __init__(self,      ):
+        
 
 class Cubes:
     def __init__(self, config=dict()):

@@ -25,7 +25,7 @@ parser.add_argument("-s","--script", type=str, default = "",
 parser.add_argument("-a","--ascii", type=Judge_bool, default=True,
         help = "Set true to Print as ascii. False to print at number \n False로 설정할 시 출력이 아스키코드 형태로 나옵니다.")
 parser.add_argument("-g","--gui", type=Judge_bool, default=False,
-        help = "Set true to show as 3d gui. \n Ture로 설정하면 3d gui 환경으로 확인할 수 있습니다. ")
+        help = "Set true to show as 3d gui. \n True로 설정하면 3d gui 환경으로 확인할 수 있습니다. ")
 
 args = parser.parse_args() #파서의 변수 지정
 

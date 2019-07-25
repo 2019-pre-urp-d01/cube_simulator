@@ -15,7 +15,7 @@ def Judge_bool(b):
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-dl","--debug-level", type=int, choices=[0,1,2], default=1,
-        help = "Debug: Change Debug Message Level, 0=Off, 1=Basic, 2=Commands \n 디버그: 디버그 메시지의 레벨을 바꿉니다 0=끔, 1=일반, 2=커맨드 나열")
+        help = "Debug: Change Debug Message Level, 0=Off, 1=Basic, 2=Commands \n 디버그: 디버그 메시지의 레벨을 바꿉니다 0=끔(간단출력), 1=일반, 2=커맨드 나열")
 parser.add_argument("-dc","--debug-cube", type=Judge_bool, default=False,
         help = "Debug: Show cube at every step True to enable \n 디버그: 매 모습을 큐브의 전개도 형식으로 나타냅니다." )
 parser.add_argument("-ds","--debug-step", type=Judge_bool, default=False,
@@ -65,10 +65,10 @@ if __name__ == "__main__":
 
 
     logging.info("Script Loaded with Length %d"%len(str_input))
-    logging.warning(str_input)
+    logging.info(str_input)
     
     c = Cubes(args.debug_level, args.ascii, args.debug_cube, args.debug_step)
-    logging.warning("*"*50)
-    logging.warning("%30s"%"Result")
+    logging.info("*"*50)
+    logging.info("%30s"%"Result")
     logging.warning("*"*50)
     print(c.execute(str_input))

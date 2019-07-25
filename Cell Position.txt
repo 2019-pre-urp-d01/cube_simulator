@@ -1,0 +1,74 @@
+================================
+         Fixed Actions
+================================
+
+Plane Number 0 for Up
+Plane Number 1 for Front
+Plane Number 2 for Right
+Plane Number 3 for Left
+Plane Number 4 for Back
+Plane Number 5 for Down
+
+
+================================
+         Default Actions
+================================
+
+0 = Input
+1 = One
+2 = And
+3 = Or
+4 = Not
+5 = Output
+
+
+================================
+        Set-up Actions
+================================
+
+0 =
+1 =
+2 =
+3 =
+4 =
+5 =
+
+
+================================
+       Available Actions
+================================
+
+0 = Input
+1 = Output
+2 = And
+3 = Nand
+4 = Or
+5 = Nor
+6 = Xor
+7 = Xnor
+8 = Not
+9 = One
+
+
+
+Default Cell Position:
+            ----------
+           | u6 u7 u0 |
+           | u5 u8 u1 |
+           | u4 u3 u2 |
+ ---------- ---------- ---------- ----------
+| l6 l7 l0 | f6 f7 f0 | r6 r7 r8 | b6 b7 b0 |
+| l5 l8 l1 | f5 f8 f1 | r5 f8 f1 | b5 b8 b1 |
+| l4 l3 l2 | f4 f3 f2 | r4 r3 r2 | b4 b3 b2 |
+ ---------- ---------- ---------- ----------
+           | d6 d7 d0 |
+           | d5 d8 d1 |
+           | d4 d3 d2 |
+            ----------
+
+Bit Cell Order for 0, Up Plane:    [u0, u1, u2, u3, u4, u5, u6, u7] = [1, 2, 4, 8, 16, 32, 64, 128]
+Bit Cell Order for 1, Front Plane: [f0, f1, f2, f3, f4, f5, f6, f7] = [1, 2, 4, 8, 16, 32, 64, 128]
+Bit Cell Order for 2, Right Plane: [r0, r1, r2, r3, r4, r5, r6, r7] = [1, 2, 4, 8, 16, 32, 64, 128]
+Bit Cell Order for 3, Left Plane:  [l0, l1, l2, l3, l4, l5, l6, l7] = [1, 2, 4, 8, 16, 32, 64, 128]
+Bit Cell Order for 4, Back Plane:  [b0, b1, b2, b3, b4, b5, b6, b7] = [1, 2, 4, 8, 16, 32, 64, 128]
+Bit Cell Order for 5, Down Plane:  [d0, d1, d2, d3, d4, d5, d6, d7] = [1, 2, 4, 8, 16, 32, 64, 128]

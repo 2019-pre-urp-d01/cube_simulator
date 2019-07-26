@@ -8,12 +8,43 @@ class Cube:
         self.hyper_out = None
 
         # Cell's function of each cell
-        self.cell_function = ["Input","One","Not","Or","And","Output"]
-        self.initial_location = [0, 0, 0, 0, 0, 0]
+        self.cell_function_dict = {0:"Input", 1:"One", 2:"Not", 3:"Or", 4:"And", 5:"Output"}
+        self.initial_location = self.cell_fucton_dict.keys()
+        self.cell_function = self.cell_function_dict.values()
 
         self.cell_data = [0]*6
         self.cell_bit  = [[0]*8]*6
         self.cell_core = 0
+
+    # Change cell's function as set-up file
+    def SetUpPlane(self, file):
+        self.setup_file = open(file, 'r')
+
+        # Read whole line from file, lines 29-34
+        for txt_ind, txt_ln in enumerate(self.setup_file):
+            if   txt_ind == 28:    up_plane = txt_ln
+            elif txt_ind == 29: front_plane = txt_ln
+            elif txt_ind == 30: right_plane = txt_ln
+            elif txt_ind == 31:  left_plane = txt_ln
+            elif txt_ind == 32:  back_plane = txt_ln
+            elif txt_ind == 33:  down_plane = txt_ln
+        raw_plane = [up_plane, front_plane, right_plane, left_plane, back_plane, down_plane]
+
+        # Read available actions and create a List
+        self.available_action = []
+        for txt_ind, txt_ln in enumerate(self.setup_file):
+            # txt_ind = 40
+            # while txt_ln[2] == "=":
+                # action = txt_ln[4:]
+                # available_action.append(action)
+                # txt_ind += 1
+            pass
+
+        # Change cell's function if set-up actions are not blank
+        for i in raw_plane:
+            if len(raw_plane[i]) < 5: pass
+            else: self.cell_function_dict[i] = raw_plane[i][4:]
+        self.cell_function = self.cell_function_dict.values()
 
     # Convert Bit Cells' binary to Data Cell's Demical
     def Bit2Dec(self, plane):
@@ -55,7 +86,7 @@ class Cube:
         if plane == -1:
             for i in range(6):
                 self.cell_data[i] = self.Bit2Dec(i)
-        elif plane < 6:
+        elif (plane < 6) & (plane > -1):
             self.cell_data[plane] = self.Bit2Dec(plane)
         else:
             logging.error("Couldn't find that plane")
@@ -67,7 +98,7 @@ class Cube:
             for i in range(6):
                 for bitnum in range(8):
                     self.cell_bit[i][bitnum] = (self.cell_data[i] >> bitnum) & 1
-        elif plane < 6:
+        elif (plane < 6) & (plane > -1):
             for bitnum in range(8):
                 self.cell_bit[plane][bitnum] = (self.cell_data[plane] >> bitnum) & 1
         else:
@@ -80,7 +111,7 @@ class Cube:
             self.cell_data = [0]*6
             self.cell_bit  = [[0]*8]*6
             self.cell_core = 0
-        elif plane < 6:
+        elif (plane < 6) & (plane > -1):
             self.cell_data[plane] = 0
             for i in range(8):
                 self.cell_bit[plane][i] = 0
@@ -115,21 +146,21 @@ class Cube:
                 self.cell_data[var_not] = ~self.Bin2Dec(var_not)
 
         elif plane < 6:
-            if self.cell_function[plane] = "Input" or "Output" or "One":
-                break
-            elif self.cell_function[plane] = "And":
+            if self.cell_function[plane] == "Input" or "Output" or "One":
+                pass
+            elif self.cell_function[plane] == "And":
                 self.cell_data[plane] = self.cell_data[plane] & self.Bin2Dec(plane)
-            elif self.cell_function[plane] = "Or":
+            elif self.cell_function[plane] == "Or":
                 self.cell_data[plane] = self.cell_data[plane] | self.Bin2Dec(plane)
-            elif self.cell_function[plane] = "Xor":
+            elif self.cell_function[plane] == "Xor":
                 self.cell_data[plane] = self.cell_data[plane] ^ self.Bin2Dec(plane)
-            elif self.cell_function[plane] = "Nand":
+            elif self.cell_function[plane] == "Nand":
                 self.cell_data[plane] = ~(self.cell_data[plane] & self.Bin2Dec(plane))
-            elif self.cell_function[plane] = "Nor":
+            elif self.cell_function[plane] == "Nor":
                 self.cell_data[plane] = ~(self.cell_data[plane] | self.Bin2Dec(plane))
-            elif self.cell_function[plane] = "Xnor":
+            elif self.cell_function[plane] == "Xnor":
                 self.cell_data[plane] = ~(self.cell_data[plane] ^ self.Bin2Dec(plane))
-            elif self.cell_function[plane] = "Not":
+            elif self.cell_function[plane] == "Not":
                 self.cell_data[plane] = ~self.Bin2Dec(plane)
 
         else:
@@ -140,9 +171,7 @@ class Cube:
     def Rotate(self):
         pass
 
-class Cells:
-    def __init__(self,      ):
-        
+
 
 class Cubes:
     def __init__(self, config=dict()):

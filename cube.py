@@ -107,9 +107,19 @@ class Cube:
         if len(plane) == 0:
             logging.error("Couldn't find output plane")
             return None
+<<<<<<< HEAD
+<<<<<<< Updated upstream
+        return self.cell_data[plane]
+=======
+        elif len(plane) > 1:
+            logging.error("Nonsense cube; more than one output cell")
+        return self.cell_data[plane[0]]
+>>>>>>> Stashed changes
+=======
         elif len(plane) > 1:
             logging.error("Nonsense cube; more than one output cell")
         return self.cell_data[p]
+>>>>>>> 12f636e0bdd3711413b81cb6a050dbc47ab10b14
 
     # Save bit cell to data cell
     def Save(self, plane=-1):
@@ -160,25 +170,45 @@ class Cube:
             var_xnor = self.FindPlane("Xnor")
             var_not  = self.FindPlane("Not")
 
-            if var_and != -1:
-                self.cell_data[var_and] = self.cell_data[var_and] & self.Bin2Dec(var_and)
-            if var_or != -1:
-                self.cell_data[var_or] = self.cell_data[var_or] | self.Bin2Dec(var_or)
-            if var_xor != -1:
-                self.cell_data[var_xor] = self.cell_data[var_xor] ^ self.Bin2Dec(var_xor)
-            if var_nand != -1:
-                self.cell_data[var_nand] = ~(self.cell_data[var_nand] & self.Bin2Dec(var_nand))
-            if var_nor != -1:
-                self.cell_data[var_nor] = ~(self.cell_data[var_nor] | self.Bin2Dec(var_nor))
-            if var_xnor != -1:
-                self.cell_data[var_xnor] = ~(self.cell_data[var_xnor] ^ self.Bin2Dec(var_xnor))
+            if len(var_and) != 0:
+                for i in var_and:
+                    self.cell_data[var_and[i]] = self.cell_data[var_and[i]] & self.Bin2Dec(var_and[i])
+            if len(var_or) != 0:
+                for i in var_or:
+                    self.cell_data[var_or[i]] = self.cell_data[var_or[i]] | self.Bin2Dec(var_or[i])
+            if var_xor != 0:
+                for i in var_xor:
+                    self.cell_data[var_xor[i]] = self.cell_data[var_xor[i]] ^ self.Bin2Dec(var_xor[i])
+            if var_nand != 0:
+                for i in var_nand:
+                    self.cell_data[var_nand[i]] = ~(self.cell_data[var_nand[i]] & self.Bin2Dec(var_nand[i]))
+            if var_nor != 0:
+                for i in var_nor:
+                    self.cell_data[var_nor[i]] = ~(self.cell_data[var_nor[i]] | self.Bin2Dec(var_nor[i]))
+            if var_xnor != 0:
+                for i in var_xnor:
+                    self.cell_data[var_xnor[i]] = ~(self.cell_data[var_xnor[i]] ^ self.Bin2Dec(var_xnor[i]))
             if var_not != -1:
-                self.cell_data[var_not] = ~self.Bin2Dec(var_not)
+                for i in var_not:
+                    self.cell_data[var_not[i]] = ~self.Bin2Dec(var_not[i])
 
+<<<<<<< Updated upstream
         elif plane < 6:
+<<<<<<< HEAD
+            if self.cell_function[plane] = "Input" or "Output" or "One":
+                break
+            elif self.cell_function[plane] = "And":
+=======
+        elif (plane < 6) & (plane > -1):
             if self.cell_function[plane] == "Input" or "Output" or "One":
                 pass
             elif self.cell_function[plane] == "And":
+>>>>>>> Stashed changes
+=======
+            if self.cell_function[plane] == "Input" or "Output" or "One":
+                pass
+            elif self.cell_function[plane] == "And":
+>>>>>>> 12f636e0bdd3711413b81cb6a050dbc47ab10b14
                 self.cell_data[plane] = self.cell_data[plane] & self.Bin2Dec(plane)
             elif self.cell_function[plane] == "Or":
                 self.cell_data[plane] = self.cell_data[plane] | self.Bin2Dec(plane)

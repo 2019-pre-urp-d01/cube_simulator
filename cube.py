@@ -5,9 +5,9 @@ class Cube:
     # Cube initialization
     def __init__(self):
         self.hyper_in  = None
-        self.hyper_out = None
+        self.hyper_out = None #Cubes에서 이용할 하이퍼인, 하이퍼아웃
 
-        # Cell's function of each cell
+        #Cell's function of each cell
         self.cell_function = ["Input","One","Not","Or","And","Output"]
         self.initial_location = [0, 0, 0, 0, 0, 0]
 
@@ -115,21 +115,21 @@ class Cube:
                 self.cell_data[var_not] = ~self.Bin2Dec(var_not)
 
         elif plane < 6:
-            if self.cell_function[plane] = "Input" or "Output" or "One":
-                break
-            elif self.cell_function[plane] = "And":
+            if self.cell_function[plane] == "Input" or "Output" or "One":
+                pass
+            elif self.cell_function[plane] == "And":
                 self.cell_data[plane] = self.cell_data[plane] & self.Bin2Dec(plane)
-            elif self.cell_function[plane] = "Or":
+            elif self.cell_function[plane] == "Or":
                 self.cell_data[plane] = self.cell_data[plane] | self.Bin2Dec(plane)
-            elif self.cell_function[plane] = "Xor":
+            elif self.cell_function[plane] == "Xor":
                 self.cell_data[plane] = self.cell_data[plane] ^ self.Bin2Dec(plane)
-            elif self.cell_function[plane] = "Nand":
+            elif self.cell_function[plane] == "Nand":
                 self.cell_data[plane] = ~(self.cell_data[plane] & self.Bin2Dec(plane))
-            elif self.cell_function[plane] = "Nor":
+            elif self.cell_function[plane] == "Nor":
                 self.cell_data[plane] = ~(self.cell_data[plane] | self.Bin2Dec(plane))
-            elif self.cell_function[plane] = "Xnor":
+            elif self.cell_function[plane] == "Xnor":
                 self.cell_data[plane] = ~(self.cell_data[plane] ^ self.Bin2Dec(plane))
-            elif self.cell_function[plane] = "Not":
+            elif self.cell_function[plane] == "Not":
                 self.cell_data[plane] = ~self.Bin2Dec(plane)
 
         else:
@@ -140,22 +140,31 @@ class Cube:
     def Rotate(self):
         pass
 
-class Cells:
-    def __init__(self,      ):
         
 
 class Cubes:
-    def __init__(self, config=dict()):
-
+    def __init__(self, c_debug=0, c_ascii=0, c_cube=False, c_step=0):
         # List of cubes
         self.cubes = list()
         # Generate One cube
+        self.c_debug = c_debug
+        self.c_ascii = c_ascii
+        self.c_step = c_step
         self.cube = Cube()
         self.cubes.append(self.cube)
 
     # Create one cube, and set pointers
-    def CreateCubeOnDirection(self, direction="in"):
-        pass
+    def CreateCubeOnDirection(self, cube_structure, direction="in"):
+        new_cube = Cube() #새로운 큐브를 제작함
+        if direction == 'in': #방향이 in이라면
+            new_cube.hyper_out = cube_structure #큐브 자료형에다가 기존의 큐브 구조를 할당함
+            cube_structure.hyper_in = new_cube #기존 큐브 구조에다가 새로운 큐브 구조를 할당함 (결국 주소값을 다르게 하기 위한 작업인 것 같다)
+        else:
+            new_cube.hyper_in = cube_structure
+            cube_structure.hyper_out = new_cube
+        self.cubes.append(new_cube)
+        return new_cube
+            
 
     # Exectue one command
     def Execute(self, command):

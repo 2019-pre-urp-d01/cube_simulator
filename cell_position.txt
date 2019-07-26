@@ -26,12 +26,12 @@ Plane Number 5 for Down
         Set-up Actions
 ================================
 
-0 =
-1 =
-2 =
-3 =
-4 =
-5 =
+0 = Input
+1 = Output
+2 = And
+3 = Or
+4 = Not
+5 = ShiftClockwise
 
 
 ================================
@@ -53,7 +53,16 @@ B = ShiftCounterClockwise
 
 
 ================================
-Default Cell Position:
+     Default Cell Position
+================================
+
+Bit Cell Order for 0, Up Plane:    [u0, u1, u2, u3, u4, u5, u6, u7] = [1, 2, 4, 8, 16, 32, 64, 128]
+Bit Cell Order for 1, Front Plane: [f0, f1, f2, f3, f4, f5, f6, f7] = [1, 2, 4, 8, 16, 32, 64, 128]
+Bit Cell Order for 2, Right Plane: [r0, r1, r2, r3, r4, r5, r6, r7] = [1, 2, 4, 8, 16, 32, 64, 128]
+Bit Cell Order for 3, Left Plane:  [l0, l1, l2, l3, l4, l5, l6, l7] = [1, 2, 4, 8, 16, 32, 64, 128]
+Bit Cell Order for 4, Back Plane:  [b0, b1, b2, b3, b4, b5, b6, b7] = [1, 2, 4, 8, 16, 32, 64, 128]
+Bit Cell Order for 5, Down Plane:  [d0, d1, d2, d3, d4, d5, d6, d7] = [1, 2, 4, 8, 16, 32, 64, 128]
+
             ----------
            | u6 u7 u0 |
            | u5 u8 u1 |
@@ -67,12 +76,3 @@ Default Cell Position:
            | d5 d8 d1 |
            | d4 d3 d2 |
             ----------
-
-Bit Cell Order for 0, Up Plane:    [u0, u1, u2, u3, u4, u5, u6, u7] = [1, 2, 4, 8, 16, 32, 64, 128]
-Bit Cell Order for 1, Front Plane: [f0, f1, f2, f3, f4, f5, f6, f7] = [1, 2, 4, 8, 16, 32, 64, 128]
-Bit Cell Order for 2, Right Plane: [r0, r1, r2, r3, r4, r5, r6, r7] = [1, 2, 4, 8, 16, 32, 64, 128]
-Bit Cell Order for 3, Left Plane:  [l0, l1, l2, l3, l4, l5, l6, l7] = [1, 2, 4, 8, 16, 32, 64, 128]
-Bit Cell Order for 4, Back Plane:  [b0, b1, b2, b3, b4, b5, b6, b7] = [1, 2, 4, 8, 16, 32, 64, 128]
-Bit Cell Order for 5, Down Plane:  [d0, d1, d2, d3, d4, d5, d6, d7] = [1, 2, 4, 8, 16, 32, 64, 128]
-
-BitUp = {}

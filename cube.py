@@ -1,6 +1,10 @@
 import logging
 import numpy as np
 
+rotate_list = ["U", "D", "L", "R", "F", "B", "u", "d", "l", "r", "f", "b", "M", "S", "E"]
+index_list = ["0", "1", "2", "3", "4", "5", "6"]
+
+
 class Cube:
     # Cube initialization
     def __init__(self):
@@ -38,7 +42,7 @@ class Cube:
     def Input(self, val):
         plane = self.FindPlane("Input")
         if plane == -1:
-            logging.error("Couldn't find input plane")
+            logging.error("error: Couldn't find input plane")
             return None
         self.cell_data[plane] = val
 
@@ -46,7 +50,7 @@ class Cube:
     def Output(self):
         plane = self.FindPlane("Output")
         if plane == -1:
-            logging.error("Couldn't find output plane")
+            logging.error("error: Couldn't find output plane")
             return None
         return self.cell_data[plane]
 
@@ -58,7 +62,7 @@ class Cube:
         elif plane < 6:
             self.cell_data[plane] = self.Bit2Dec(plane)
         else:
-            logging.error("Couldn't find that plane")
+            logging.error("error: Couldn't find that plane")
             return None
 
     # Load data cell to bit cell
@@ -71,7 +75,7 @@ class Cube:
             for bitnum in range(8):
                 self.cell_bit[plane][bitnum] = (self.cell_data[plane] >> bitnum) & 1
         else:
-            logging.error("Couldn't find that plane")
+            logging.error("error: Couldn't find that plane")
             return None
 
     # Clear every cell to initial state
@@ -85,7 +89,7 @@ class Cube:
             for i in range(8):
                 self.cell_bit[plane][i] = 0
         else:
-            logging.error("Couldn't find that plane")
+            logging.error("error: Couldn't find that plane")
         self.StaticOne()
 
     # Execute cell
@@ -133,7 +137,7 @@ class Cube:
                 self.cell_data[plane] = ~self.Bin2Dec(plane)
 
         else:
-            logging.error("Couldn't find that plane")
+            logging.error("error: Couldn't find that plane")
             return None
 
     # Rotate cube
@@ -167,8 +171,33 @@ class Cubes:
             
 
     # Exectue one command
-    def Execute(self, command):
-        pass
+    def Execute(self, script = ""):
+        script_index = 0; input_index = 0; result = ""
+        s_word = script[script_index] #스크립트의 한글자 한글자씩 분석을 할 거기 때문에 인덱스로 할당함
+        while script_index < len(script):
+            if s_word in rotate_list:
+                if script_index+1 < len(script) and script[script_index+1] in ["'"]: #' 붙인 거 판별
+                    logging.info("%s : Rotate"%script[script_index:script_index+2]) # 커맨드를 작성한다
+                    self.cube.Rotate(script[script_index:script_index+2]) # rotate로 돌린다
+                    script_index += 1 #일단 1만 더해준다음에 나중에 1 또 더해주니까(모든 if문을 빠져나오면 +1하게 설정할 것임) 1만 더해준다
+                else:
+                    logging.info("%s : Rotate"%s_word)
+                    self.cube.Rotate(s_word)
+            elif s_word in index_list: #명령 확장
+                logging.info("%s Number inputed"%s_word)
+            elif s == 'I': #input
+                print(">"*9+"INPUT"+">"*9, end="")
+                input_ = input()
+                logging.info("%s : Input -> %s"%(s, a[0]))
+                self.cube.input(ord(a[0])) #첫번째 글자 추출 후 아스키 코드로 변환함(한 글자밖에 받을 수 없음)
+            elif s == 'P': #print
+                logging.info("%s : Input -> %s"%(s, a[0]))
+                
+                
+                
+                
+
+                
 
     # Execute Commands
     def ExecuteCommands(self, commands):

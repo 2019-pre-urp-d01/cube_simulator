@@ -46,31 +46,6 @@ class Cube:
         # Core Cell
         self.cell_core = 0
 
-    # Change cell's function as set-up file
-    def SetUpPlane(self, file):
-        self.setup_file = open(file, 'r')
-
-        # Read whole line from file, lines 29-34
-        for txt_ind, txt_ln in enumerate(self.setup_file):
-            if   txt_ind == 28:    up_plane = txt_ln
-            elif txt_ind == 29: front_plane = txt_ln
-            elif txt_ind == 30: right_plane = txt_ln
-            elif txt_ind == 31:  left_plane = txt_ln
-            elif txt_ind == 32:  back_plane = txt_ln
-            elif txt_ind == 33:  down_plane = txt_ln
-        raw_plane = [up_plane, front_plane, right_plane, left_plane, back_plane, down_plane]
-
-        # Read bit cells' positions from file
-        self.cell_list = (self.setup_file.split(""))
-        self.start_ind = self.cell_list.index("Available Actions")
-
-
-        # Change cell's function if set-up actions are not blank
-        for i in raw_plane:
-            if len(raw_plane[i]) < 5: pass
-            else: self.cell_function_dict[i] = raw_plane[i][4:]
-        self.cell_function = list(self.cell_function_dict.values())
-
     # Convert Bit Cells' binary to Data Cell's Demical
     def Bit2Dec(self, plane):
         dec = 0

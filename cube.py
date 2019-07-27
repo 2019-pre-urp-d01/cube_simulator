@@ -265,6 +265,7 @@ class Cubes:
                 logging.warning("('s count and )'s count are not match, please rewrite it.")
                 raise CoreCellCmdError_COUNT
         s_word = script[script_index] #스크립트의 한글자 한글자씩 분석을 할 거기 때문에 인덱스로 할당함
+
         while script_index < len(script):
             if s_word in rotate_list:
                 if script_index+1 < len(script) and script[script_index+1] in ["'"]: #' 붙인 거 판별
@@ -274,21 +275,29 @@ class Cubes:
                 else:
                     logging.info("%s : Rotate"%s_word)
                     self.cube.Rotate(s_word)
+                    
             elif s_word in index_list: #명령 확장
                 logging.info("%s Number inputed"%s_word)
+                
             elif s_word == 'I': #input
                 print(">"*9+"INPUT"+">"*9, end="")
                 input_ = input()
                 logging.info("%s : Input"%s_word)
                 self.cube.Input(ord(input_[0])) #첫번째 글자 추출 후 아스키 코드로 변환함(한 글자밖에 받을 수 없음)
+
             elif s_word == 'P': #print
                 logging.info("%s : Output -> %s"%(s_word, input_[0]))
                 if self.c_ascii: result += chr(self.cube.Output())
                 else: result += "%3d "%self.cube.output()
-            elif s_word == "X": logging.info("%s: Execute"%s); self.cube.execute()  #execute
-            elif s_word == "*": logging.info("%s: Load"%s); self.cube.load() #load
-            elif s_word == "=": logging.info("%s: Save"%s); self.cube.save() #save
-            elif s_word == "C": logging.info("%s: Clear"%s); self.cube.clear() #clear
+
+            elif s_word == "X": logging.info("%s: Execute"%s); self.cube.Execute()  #execute
+
+            elif s_word == "*": logging.info("%s: Load"%s); self.cube.Load() #load
+
+            elif s_word == "=": logging.info("%s: Save"%s); self.cube.Save() #save
+
+            elif s_word == "C": logging.info("%s: Clear"%s); self.cube.Clear() #clear
+
             elif s == "(":
                 if self.cube.cell_core != 0:
                     logging.info("%s: If open, Core Cell is Not Zero:%d"%(s_word,self.cube.cell_core))
@@ -305,6 +314,7 @@ class Cubes:
                             else: break
                         locate += 1
                     script_index = locate
+                    
             elif s == ")":
                 if self.cube.cell_core != 0:
                     logging.info("%s: If close, Core Cell is Not Zero:%d"%(s_word,self.cube.cell_core))
@@ -321,40 +331,52 @@ class Cubes:
                 else:
                     logging.info("%s If close, Core Cell is Zero"%s_word)
                     # par_stack.append(script_index+1)
+                    
             elif s == "!": logging.info("%s: Core <- Input"%s_word); self.cube.cell_core = self.cube.cell_data[0]
+
             elif s == "-": logging.info("%s: Core -= Input"%s_word); self.cube.cell_core -= self.cube.cell_data[0]
+
             elif s == "+": logging.info("%s: Core += Input"%s_word); self.cube.cell_core += self.cube.cell_data[0]
+
             elif s == "m": logging.info("%s: Core - 1"%s_word); self.cube.cell_core -= 1 #나중에 여기 수정해야 한다!!
+
             elif s == "p": logging.info("%s: Core + 1"%s_word); self.cube.cell_core += 1
+
             elif s_word == "[":
                 if self.cube.hyper_in == None: new_cube = self.CreateCubeOnDirection(self.cube, "in")
                 else: new_cube = self.cube.hyper_in
                 loggign.info("%s: Move Inside From %s to %s"%(s_word,id(self.cube),id(new_cube)))
                 self.cube = new_cube
+
             elif s_word == "]":
                 if self.cube.hyper_out == None: new_cube = self.CreateCubeOnDirection(self.cube, "out")
                 else: new_cube = self.cube.hyper_out
                 logging.info("%s: Move Outside From %s to %s"%(s_word,id(self.cube),id(new_cube)))
                 self.cube = new_cube
+
             elif s_word == "{":
                 if self.cube.hyper_in == None: new_cube = self.CreateCubeOnDirection(self.cube, "in")
                 else: new_cube = self.cube.hyper_in
                 logging.info("%s: Send Data Inside From %s to %s"%(s_word,id(self.cube),id(new_cube)))
                 for i in range(6):
                     new_cube.cell_data[i] = self.cube.cell_data[i]
+
             elif s == "}":
                 if self.cube.hyper_out == None: new_cube = self.CreateCubeOnDirection(self.cube, "out")
                 else: new_cube = self.cube.hyper_out
                 logging.info("%s: Send Data Outside From %s to %s"%(s_word,id(self.cube),id(new_cube)))
                 for i in range(6):
                     new_cube.cell_data[i] = self.cube.cell_data[i]
+
             else:
                 logging.info("%s: Unrecognized Character"%s_word)
 
                 logging.warning("please input right Character")
                 script_index += 1
                 continue
+
             script_index += 1
+
             if self.c_cube:
                 self.cube.Show() #보여주는 거 작성하는 함수는 아직
 

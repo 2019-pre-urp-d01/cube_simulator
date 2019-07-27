@@ -5,12 +5,12 @@ from setup_file_io import LoadCfg
 
 DEFAULT_FUNCTION = {0:"Input", 1:"One", 2:"Not", 3:"Or", 4:"And", 5:"Output"}
 
-DEFAULT_UP_BIT_DICT    = {"u0":0, "u1":0, "u2":0, "u3":0, "u4":0, "u5":0, "u6":0, "u7":0}
-DEFAULT_FRONT_BIT_DICT = {"f0":0, "f1":0, "f2":0, "f3":0, "f4":0, "f5":0, "f6":0, "f7":0}
-DEFAULT_RIGHT_BIT_DICT = {"r0":0, "r1":0, "r2":0, "r3":0, "r4":0, "r5":0, "r6":0, "r7":0}
-DEFAULT_LEFT_BIT_DICT  = {"l0":0, "l1":0, "l2":0, "l3":0, "l4":0, "l5":0, "l6":0, "l7":0}
-DEFAULT_BACK_BIT_DICT  = {"b0":0, "b1":0, "b2":0, "b3":0, "b4":0, "b5":0, "b6":0, "b7":0}
-DEFAULT_DOWN_BIT_DICT  = {"d0":0, "d1":0, "d2":0, "d3":0, "d4":0, "d5":0, "d6":0, "d7":0}
+DEFAULT_UP_BIT_DICT    = {"u0":[1,0], "u1":[2,0], "u2":[4,0], "u3":[8,0], "u4":[16,0], "u5":[32,0], "u6":[64,0], "u7":[128,0]}
+DEFAULT_FRONT_BIT_DICT = {"f0":[1,0], "f1":[2,0], "f2":[4,0], "f3":[8,0], "f4":[16,0], "f5":[32,0], "f6":[64,0], "f7":[128,0]}
+DEFAULT_RIGHT_BIT_DICT = {"r0":[1,0], "r1":[2,0], "r2":[4,0], "r3":[8,0], "r4":[16,0], "r5":[32,0], "r6":[64,0], "r7":[128,0]}
+DEFAULT_LEFT_BIT_DICT  = {"l0":[1,0], "l1":[2,0], "l2":[4,0], "l3":[8,0], "l4":[16,0], "l5":[32,0], "l6":[64,0], "l7":[128,0]}
+DEFAULT_BACK_BIT_DICT  = {"b0":[1,0], "b1":[2,0], "b2":[4,0], "b3":[8,0], "b4":[16,0], "b5":[32,0], "b6":[64,0], "b7":[128,0]}
+DEFAULT_DOWN_BIT_DICT  = {"d0":[1,0], "d1":[2,0], "d2":[4,0], "d3":[8,0], "d4":[16,0], "d5":[32,0], "d6":[64,0], "d7":[128,0]}
 
 rotate_list = ["U", "D", "L", "R", "F", "B", "u", "d", "l", "r", "f", "b", "M", "S", "E"]
 index_list = ["0", "1", "2", "3", "4", "5", "6"]
@@ -25,11 +25,11 @@ class Cube:
         self.cell_function_dict = cell_function_dict
         self.cell_function = list(self.cell_function_dict.values())
 
-        # Bit Cells
+        # Data Cells
         self.cell_data_dict = {"U":0, "F":0, "R":0, "L":0, "B":0, "D":0}
         self.cell_data = list(self.cell_data_dict.values())
 
-        # Data Cells
+        # Bit Cells
         self.cell_bit_up_dict    = cell_bit_up_dict
         self.cell_bit_front_dict = cell_bit_front_dict
         self.cell_bit_right_dict = cell_bit_right_dict
@@ -44,42 +44,24 @@ class Cube:
         self.cell_bit_back  = list(self.cell_bit_back_dict.values())
         self.cell_bit_down  = list(self.cell_bit_down_dict.values())
 
+        self.cell_val  = [list(self.cell_bit_up_dict.keys()), list(self.cell_bit_front_dict.keys()), list(self.cell_bit_right_dict.keys()), list(self.cell_bit_left_dict.keys()), list(self.cell_bit_back_dict.keys()), list(self.cell_bit_back_down.keys())]
         self.cell_bit  = [self.cell_bit_up, self.cell_bit_front, self.cell_bit_right, self.cell_bit_left, self.cell_bit_back, self.cell_bit_down]
 
         # Core Cell
         self.cell_core = 0
 
-    # Change cell's function as set-up file
-    def SetUpPlane(self, file):
-        self.setup_file = open(file, 'r')
-
-        # Read whole line from file, lines 29-34
-        for txt_ind, txt_ln in enumerate(self.setup_file):
-            if   txt_ind == 28:    up_plane = txt_ln
-            elif txt_ind == 29: front_plane = txt_ln
-            elif txt_ind == 30: right_plane = txt_ln
-            elif txt_ind == 31:  left_plane = txt_ln
-            elif txt_ind == 32:  back_plane = txt_ln
-            elif txt_ind == 33:  down_plane = txt_ln
-        raw_plane = [up_plane, front_plane, right_plane, left_plane, back_plane, down_plane]
-
-        # Read bit cells' positions from file
-        self.cell_list = (self.setup_file.split(""))
-        self.start_ind = self.cell_list.index("Available Actions")
-
-
-        # Change cell's function if set-up actions are not blank
-        for i in raw_plane:
-            if len(raw_plane[i]) < 5: pass
-            else: self.cell_function_dict[i] = raw_plane[i][4:]
-        self.cell_function = list(self.cell_function_dict.values())
-
-    # Convert Bit Cells' binary to Data Cell's Demical
+    # Convert Bit Cells' binary to Data Cell's demical
     def Bit2Dec(self, plane):
         dec = 0
-        for bitnum in range(8):
-            dec += self.cell_bit[plane][bitnum] << bitnum
+        for num in range(8):
+            dec += (self.cell_bit[num][0] * self.cell_bit[num][1])
         return dec
+
+    # Convert Data Cell's demical to Bit Cells' binary
+    def Dec2Bin(self, plane):
+        bin = list(bin(self.cell_data[plane])[2:])
+        list_bin = list(map(int, bin))
+        return list_bin
 
     # Find corresponding Planes
     def FindPlane(self, inp):
@@ -110,7 +92,6 @@ class Cube:
         if len(plane) == 0:
             logging.error("Couldn't find output plane")
             return None
-
         elif len(plane) > 1:
             logging.error("Nonsense cube; more than one output cell")
         return self.cell_data[plane[0]]
@@ -130,11 +111,41 @@ class Cube:
     def Load(self, plane=-1):
         if plane == -1:
             for i in range(6):
-                for bitnum in range(8):
-                    self.cell_bit[i][bitnum] = (self.cell_data[i] >> bitnum) & 1
+                self.cell_bit[i] = [0, 0, 0, 0, 0, 0, 0, 0]
+                list_bin = self.Dec2Bin(i)
+                while len(list_bin) < 8:
+                    list_bin.append(0, 0)
+                for j in range(8):
+                    if list_bin[j] == 0: pass
+                    else:
+                        for k in range(8):
+                            if self.cell_val[i][k] == 2 ** list_bin[j]:
+                                self.cell_bit[i][k] == 1
+
+            self.cell_bit_up = self.cell_bit[0]
+            self.cell_bit_front = self.cell_bit[1]
+            self.cell_bit_right = self.cell_bit[2]
+            self.cell_bit_left = self.cell_bit[3]
+            self.cell_bit_back = self.cell_bit[4]
+            self.cell_bit_down = self.cell_bit[5]
+            self.cell_bit_up_dict.values() = self.cell_bit_up
+            self.cell_bit_front_dict.values() = self.cell_bit_front
+            self.cell_bit_right_dict.values() = self.cell_bit_right
+            self.cell_bit_left_dict.values() = self.cell_bit_left
+            self.cell_bit_back_dict.values() = self.cell_bit_back
+            self.cell_bit_down_dict.values() = self.cell_bit_down
+
         elif (plane < 6) & (plane > -1):
-            for bitnum in range(8):
-                self.cell_bit[plane][bitnum] = (self.cell_data[plane] >> bitnum) & 1
+            self.cell_bit[plane] = [0, 0, 0, 0, 0, 0, 0, 0]
+            list_bin = self.Dec2Bin(plane)
+            while len(list_bin) < 8:
+                list_bin.append(0, 0)
+            for j in range(8):
+                if list_bin[j] == 0: pass
+                else:
+                    for k in range(8):
+                        if self.cell_val[plane][k] == 2 ** list_bin[j]:
+                            self.cell_bit[plane][k] == 1
         else:
             logging.error("Couldn't find that plane")
             return None
@@ -225,22 +236,22 @@ class Cubes:
         self.cube = Cube()
         self.cubes.append(self.cube)
 
-        cfunc_dict, ubit_dict, fbit_dict, rbit_dict, lbit_dict, bbit_dict, dbit_dict = LoadCfg(fileLoc)
-        self.cube = Cube(func_dict)
-        self.cubes.append(self.cube)
 
+        func_dict, ubit_dict, fbit_dict, rbit_dict, lbit_dict, bbit_dict, dbit_dict = LoadCfg(fileLoc)
+        self.cube = Cube(func_dict, ubit_dict, fbit_dict, rbit_dict, lbit_dict, bbit_dict, dbit_dict)
+        
     # Create one cube, and set pointers
     def CreateCubeOnDirection(self, cube_structure, direction="in"):
         new_cube = Cube() #새로운 큐브를 제작함
         if direction == 'in': #방향이 in이라면
             new_cube.hyper_out = cube_structure #큐브 자료형에다가 기존의 큐브 구조를 할당함
-            cube_structure.hyper_in = new_cube #기존 큐브 구조에다가 새로운 큐브 구조를 할당함 
+            cube_structure.hyper_in = new_cube #기존 큐브 구조에다가 새로운 큐브 구조를 할당함
         else:
             new_cube.hyper_in = cube_structure
             cube_structure.hyper_out = new_cube
         self.cubes.append(new_cube)
         return new_cube
-            
+
 
     # Exectue one command
     def Execute(self, script = ""):
@@ -339,14 +350,14 @@ class Cubes:
                     new_cube.cell_data[i] = self.cube.cell_data[i]
             else:
                 logging.info("%s: Unrecognized Character"%s_word)
-                
+
                 logging.warning("please input right Character")
                 script_index += 1
                 continue
             script_index += 1
             if self.c_cube:
                 self.cube.Show() #보여주는 거 작성하는 함수는 아직
-                
+
         logging.info('\n\n')
         return result
         pass

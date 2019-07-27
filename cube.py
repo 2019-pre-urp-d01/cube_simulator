@@ -22,11 +22,11 @@ class Cube:
         self.cell_function_dict = cell_function_dict
         self.cell_function = list(self.cell_function_dict.values())
 
-        # Bit Cells
+        # Data Cells
         self.cell_data_dict = {"U":0, "F":0, "R":0, "L":0, "B":0, "D":0}
         self.cell_data = list(self.cell_data_dict.values())
 
-        # Data Cells
+        # Bit Cells
         self.cell_bit_up_dict    = cell_bit_up_dict
         self.cell_bit_front_dict = cell_bit_front_dict
         self.cell_bit_right_dict = cell_bit_right_dict
@@ -41,6 +41,7 @@ class Cube:
         self.cell_bit_back  = list(self.cell_bit_back_dict.values())
         self.cell_bit_down  = list(self.cell_bit_down_dict.values())
 
+        self.cell_val  = [list(self.cell_bit_up_dict.keys()), list(self.cell_bit_front_dict.keys()), list(self.cell_bit_right_dict.keys()), list(self.cell_bit_left_dict.keys()), list(self.cell_bit_back_dict.keys()), list(self.cell_bit_back_down.keys())]
         self.cell_bit  = [self.cell_bit_up, self.cell_bit_front, self.cell_bit_right, self.cell_bit_left, self.cell_bit_back, self.cell_bit_down]
 
         # Core Cell
@@ -107,12 +108,41 @@ class Cube:
     def Load(self, plane=-1):
         if plane == -1:
             for i in range(6):
-                list_bin = self.Dec2Bin(plane)
+                self.cell_bit[i] = [0, 0, 0, 0, 0, 0, 0, 0]
+                list_bin = self.Dec2Bin(i)
+                while len(list_bin) < 8:
+                    list_bin.append(0, 0)
                 for j in range(8):
-                    if self.cell_bit[plane][j][0]
+                    if list_bin[j] == 0: pass
+                    else:
+                        for k in range(8):
+                            if self.cell_val[i][k] == 2 ** list_bin[j]:
+                                self.cell_bit[i][k] == 1
+
+            self.cell_bit_up = self.cell_bit[0]
+            self.cell_bit_front = self.cell_bit[1]
+            self.cell_bit_right = self.cell_bit[2]
+            self.cell_bit_left = self.cell_bit[3]
+            self.cell_bit_back = self.cell_bit[4]
+            self.cell_bit_down = self.cell_bit[5]
+            self.cell_bit_up_dict.values() = self.cell_bit_up
+            self.cell_bit_front_dict.values() = self.cell_bit_front
+            self.cell_bit_right_dict.values() = self.cell_bit_right
+            self.cell_bit_left_dict.values() = self.cell_bit_left
+            self.cell_bit_back_dict.values() = self.cell_bit_back
+            self.cell_bit_down_dict.values() = self.cell_bit_down
+
         elif (plane < 6) & (plane > -1):
-            for bitnum in range(8):
-                self.cell_bit[plane][bitnum] = (self.cell_data[plane] >> bitnum) & 1
+            self.cell_bit[plane] = [0, 0, 0, 0, 0, 0, 0, 0]
+            list_bin = self.Dec2Bin(plane)
+            while len(list_bin) < 8:
+                list_bin.append(0, 0)
+            for j in range(8):
+                if list_bin[j] == 0: pass
+                else:
+                    for k in range(8):
+                        if self.cell_val[plane][k] == 2 ** list_bin[j]:
+                            self.cell_bit[plane][k] == 1
         else:
             logging.error("Couldn't find that plane")
             return None

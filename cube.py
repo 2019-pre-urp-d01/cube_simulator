@@ -11,6 +11,7 @@ DEFAULT_RIGHT_BIT_DICT = {"r0":0, "r1":0, "r2":0, "r3":0, "r4":0, "r5":0, "r6":0
 DEFAULT_LEFT_BIT_DICT  = {"l0":0, "l1":0, "l2":0, "l3":0, "l4":0, "l5":0, "l6":0, "l7":0}
 DEFAULT_BACK_BIT_DICT  = {"b0":0, "b1":0, "b2":0, "b3":0, "b4":0, "b5":0, "b6":0, "b7":0}
 DEFAULT_DOWN_BIT_DICT  = {"d0":0, "d1":0, "d2":0, "d3":0, "d4":0, "d5":0, "d6":0, "d7":0}
+#"d0"-> 절대위치 dict[d0][0] -> 우리가 설정한 위치 dict[d0][1]
 
 class Cube:
     # Cube initialization
@@ -107,19 +108,10 @@ class Cube:
         if len(plane) == 0:
             logging.error("Couldn't find output plane")
             return None
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-        return self.cell_data[plane]
-=======
+
         elif len(plane) > 1:
             logging.error("Nonsense cube; more than one output cell")
         return self.cell_data[plane[0]]
->>>>>>> Stashed changes
-=======
-        elif len(plane) > 1:
-            logging.error("Nonsense cube; more than one output cell")
-        return self.cell_data[p]
->>>>>>> 12f636e0bdd3711413b81cb6a050dbc47ab10b14
 
     # Save bit cell to data cell
     def Save(self, plane=-1):
@@ -192,23 +184,10 @@ class Cube:
                 for i in var_not:
                     self.cell_data[var_not[i]] = ~self.Bin2Dec(var_not[i])
 
-<<<<<<< Updated upstream
-        elif plane < 6:
-<<<<<<< HEAD
-            if self.cell_function[plane] = "Input" or "Output" or "One":
-                break
-            elif self.cell_function[plane] = "And":
-=======
         elif (plane < 6) & (plane > -1):
             if self.cell_function[plane] == "Input" or "Output" or "One":
                 pass
             elif self.cell_function[plane] == "And":
->>>>>>> Stashed changes
-=======
-            if self.cell_function[plane] == "Input" or "Output" or "One":
-                pass
-            elif self.cell_function[plane] == "And":
->>>>>>> 12f636e0bdd3711413b81cb6a050dbc47ab10b14
                 self.cell_data[plane] = self.cell_data[plane] & self.Bin2Dec(plane)
             elif self.cell_function[plane] == "Or":
                 self.cell_data[plane] = self.cell_data[plane] | self.Bin2Dec(plane)

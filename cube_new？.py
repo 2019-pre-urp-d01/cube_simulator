@@ -260,7 +260,7 @@ class Cube:
     # Clear: Plane의 Bit Cell과 Data Cell의 값을 초기 상태로 되돌립니다.           ===== Clear 함수 =====
     def Clear(self, plane = -1):
         if plane == -1:                                                         # 대상 plane 번호가 -1일 떄:
-            self.cell_data =  [0] *6                                            #   모든 Plane의 Data Cell 초기화
+            self.cell_data =  [0]     *6                                        #   모든 Plane의 Data Cell 초기화
             self.cell_bit  = [[0] *8] *6                                        #   모든 Plane의 Bit Cell 초기화
             self.cell_core =   0                                                #   Core Cell 초기화
             self.StaticOne()                                                    #   Static One 셀 1로 초기화
@@ -277,7 +277,40 @@ class Cube:
 
     # Execute: 비트 연산과 Shift 연산을 수행합니다.                                ===== Execute 험수 =====
     def Execute(self, plane = -1):
-        pass
+        if plane == -1:                                                         # 대상 Plane 번호가 -1일 떄:
+            and_plane   = self.FindPlane("And")                                 #   And   Plane의 번호 찾기
+            nand_plane  = self.FindPlane("Nand")                                #   Nand  Plane의 번호 찾기
+            or_plane    = self.FindPlane("Or")                                  #   Or    Plane의 번호 찾기
+            nor_plane   = self.FindPlane("Nor")                                 #   Nor   Plane의 번호 찾기
+            xor_plane   = self.FindPlane("Xor")                                 #   Xor   Plane의 번호 찾기
+            xnor_plane  = self.FindPlane("Xnor")                                #   Xnor  Plane의 번호 찾기
+            not_plane   = self.FindPlane("Not")                                 #   Not   Plane의 번호 찾기
+            shift_plane = self.FindPlane("Shift")                               #   Shift Plane의 번호 찾기
+
+            for planenum in and_plane: self.And(planenum)                       #   AND  연산 실행
+            for planenum in nand_plane: self.Nand(planenum)                     #   NAND 연산 실행
+            for planenum in or_plane: self.Or(planenum)                         #   OR   연산 실행
+            for planenum in nor_plane: self.Nor(planenum)                       #   NOR  연산 실행
+            for planenum in xor_plane: self.Xor(planenum)                       #   XOR  연산 실행
+            for planenum in xnor_plane: self.Xnor(planenum)                     #   XNOR 연산 실행
+            for planenum in not_plane: self.Not(planenum)                       #   NOT  연산 실행
+            for planenum in shift_plane: self.Shift(planenum)                   #   Shift     실행
+
+        elif (plane > 5) | (plane < -1):                                        # 대상 Plane 번호가 범위 밖일 때:
+            logging.error("Plane Number Should be -1, 0, 1, ..., or 5")         #   error 처리 (logging)
+            return None                                                         #   Execute 함수 종료
+
+        else:                                                                   # 대상 Plane 번호가 0-5일 때:
+            if self.cell_function[plane] in ["Input", "Output", "Inout", "One"]:#   plane의 역할이 Input, Output, Inout, Static One일 떄:
+                pass                                                            #   실행 안 함
+            elif self.cell_function[plane] == "And": self.And(plane)            #   AND  연산 실행
+            elif self.cell_function[plane] == "Nand": self.Nand(plane)          #   NAND 연산 실행
+            elif self.cell_function[plane] == "Or": self.Or(plane)              #   Or   연산 실행
+            elif self.cell_function[plane] == "Nor": self.Nor(plane)            #   NOR  연산 실행
+            elif self.cell_function[plane] == "Xor": self.Xor(plane)            #   XOR  연산 실행
+            elif self.cell_function[plane] == "Xnor": self.Xnor(plane)          #   XNOR 연산 실행
+            elif self.cell_function[plane] == "Not": self.Not(plane)            #   NOT  연산 실행
+            elif self.cell_function[plane] == "Shift": self.Shift(plane)        #   Shift     실행
 
     # Rotate: 입력 받은 회전 기호에 따라 큐브의 층을 회전시킵니다.                  ===== Rotate 함수 =====
     def Rotate(self, ):

@@ -72,14 +72,14 @@ class Cube:
 
     # Sub Function: Input, Output, Load, Save, Clear, Execute, Rotate를 수행하는 데 사용하는 function입니다. ================================================================
 
-    # Bin2Dec: Bit Cell의 Binary를 Data Cell에 저장할 Demical로 바꿉니다.
+    # Bin2Dec: Bit Cell의 Binary를 Data Cell에 저장할 Demical로 바꿉니다.         ===== BIn2Dec 함수 =====
     def Bin2Dec(self, planenum):                                                # planenum: 연산을 수행할 plane의 번호
         dec = 0                                                                 # demical을 저장하여 return할 variable
         for i in range(8):                                                      # 8개의 bit cell에 대하여 반복 수행
             dec += self.cell_bit[planenum][i] * self.cell_bit_plval             # bit 값과 자릿값을 곱한 값을 dec에 저장
         return dec                                                              # dec 값 반환
 
-    # Dec2Bin: Data Cell의 Demical을 Bit Cell에 저장할 Binary로 바꿉니다.
+    # Dec2Bin: Data Cell의 Demical을 Bit Cell에 저장할 Binary로 바꿉니다.         ===== Dec2Bin 함수 =====
     def Dec2Bin(self, planenum):                                                # planenum: 연산을 수행할 plane의 번호
         raw_bin = [0, 0, 0, 0, 0, 0, 0, 0]                                      # raw_bin: 순서대로 이진수를 저장할 list
         for i in range(8):                                                      # 8개의 bit cell에 대하여 반복 수행
@@ -87,7 +87,7 @@ class Cube:
         bin = self.Raw2Plval(planenum, raw_bin)                                 # 사전 설정한 자릿값 순서에 맞게 비트 값 순서 변경
         return bin                                                              # bin list 반환
 
-    # Raw2Plval: 2진수 list의 비트 값이 자릿값 순서대로 정렬되어 있는 것을 설정된 대로 바꿉니다.
+    # Raw2Plval: 2진수 list의 비트 값이 자릿값 순서대로 정렬되어 있는 것을 설정된 대로 바꿉니다. ===== Raw2Plval 함수 =====
     def Raw2Plval(self, planenum, raw_bin):                                     # planenum: 자릿값 순서를 찾을 면, raw_bin: 순서를 바꿀 비트 값 리스트
         bin = [0, 0, 0, 0, 0, 0, 0, 0]                                          # bin: 정렬된 2진수 리스트
 
@@ -111,7 +111,7 @@ class Cube:
 
         return bin                                                              # bin list 반환
 
-    # Plval2Raw: 2진수 list의 비트 값이 설정된 대로 있는 것을 자릿값 순서대로 정렬합니다.
+    # Plval2Raw: 2진수 list의 비트 값이 설정된 대로 있는 것을 자릿값 순서대로 정렬합니다. ===== Plval2Raw 함수 =====
     def Plval2Raw(self, planenum, bin):                                         # planenum: 자릿값 순서를 찾을 면, bin: 순서를 바꿀 비트 값 리스트
         raw_bin = [0, 0, 0, 0, 0, 0, 0, 0]                                      # raw_bin: 정렬된 2진수 리스트
 
@@ -135,14 +135,14 @@ class Cube:
 
         return raw_bin                                                          # raw_bin list 반환
 
-    # FindPlane: 입력한 function을 가지고 있는 plane을 모두 찾아 list를 만듭니다.
+    # FindPlane: 입력한 function을 가지고 있는 plane을 모두 찾아 list를 만듭니다.   ===== FindPlane 함수 =====
     def FindPlane(self, planefunc):                                             # planefunc: 찾을 plane의 function
         planenum = list()                                                       # planenum: 결과를 찾아 저장할 list
         for ind, func in enumerate(self.cell_func):                             # ind: 인덱스, func: 역할
             planenum.append(ind) if func == planefunc else pass                 # func와 planefunc가 같으면 ind를 planenum에 추가
         return planenum                                                         # planenum list 반환
 
-    # And: Data Cell과 Bit Cell 사이에 AND 연산을 수행합니다.
+    # And: Data Cell과 Bit Cell 사이에 AND 연산을 수행합니다.                     ===== And 함수 =====
     def And(self, planenum):                                                    # planenum: AND 연산을 수행할 Plane 번호
         and_val1 = self.cell_data[planenum]                                     # and_val1: AND 연산을 수행할 값 1(Data Cell)
         and_val2 = self.Bin2Dec(planenum)                                       # and_val2: AND 연산을 수행할 값 2(Bit Cell)
@@ -150,12 +150,12 @@ class Cube:
         self.cell_data[planenum] = and_result                                   # Data Cell에 and_result 저장
         return and_result                                                       # Nand()를 위해 and_result 반환
 
-    # Nand: Data Cell과 Bit Cell 사이에 NAND 연산을 수행합니다.
+    # Nand: Data Cell과 Bit Cell 사이에 NAND 연산을 수행합니다.                   ===== Nand 함수 =====
     def Nand(self, planenum):                                                   # planenum: NAND 연산을 수행할 Plane 번호
         nand_result = ~self.And(planenum)                                       # And()의 결과에 not 연산 수행
         self.cell_data[planenum] = nand_result                                  # Data Cell에 nand_result 저장
 
-    # Or: Data Cell과 Bit Cell 사이에 OR 연산을 수행합니다.
+    # Or: Data Cell과 Bit Cell 사이에 OR 연산을 수행합니다.                       ===== Or 함수 =====
     def Or(self, planenum):                                                     # planenum: OR 연산을 수행할 Plane 번호
         or_val1 = self.cell_data[planenum]                                      # or_val1: OR 연산을 수행할 값 1(Data Cell)
         or_val2 = self.Bin2Dec(planenum)                                        # or_val2: OR 연산을 수행할 값 2(Bit Cell)
@@ -163,12 +163,12 @@ class Cube:
         self.cell_data[planenum] = or_result                                    # Data Cell에 or_result 저장
         return or_result                                                        # Nor()를 위해 or_result 반환
 
-    # Nor: Data Cell과 Bit Cell 사이에 NOR 연산을 수행합니다.
+    # Nor: Data Cell과 Bit Cell 사이에 NOR 연산을 수행합니다.                     ===== Nor 함수 =====
     def Nor(Self, planenum):                                                    # planenum: NOR 연산을 수행할 Plane 번호
         nor_result = ~self.Or(planenum)                                         # Or()의 결과에 not 연산 수행
         self.cell_data[planenum] = nor_result                                   # Data Cell에 nor_result 저장
 
-    # Xor: Data Cell과 Bit Cell 사이에 XOR 연산을 수행합니다.
+    # Xor: Data Cell과 Bit Cell 사이에 XOR 연산을 수행합니다.                     ===== Xor 함수 =====
     def Xor(self, planenum):                                                    # planenum: XOR 연산을 수행할 Plane 번호
         xor_val1 = self.cell_data[planenum]                                     # xor_val1: XOR 연산을 수행할 값 1(Data Cell)
         xor_val2 = self.Bin2Dec(planenum)                                       # xor_val2: XOR 연산을 수행할 값 2(Bit Cell)
@@ -176,24 +176,24 @@ class Cube:
         self.cell_data[planenum] = xor_result                                   # Data Cell에 xor_result 저장
         return xor_result                                                       # Xnor()를 위해 xor_result 반환
 
-    # Xnor: Data Cell과 Bit Cell 사이에 XNOR 연산을 수행합니다.
+    # Xnor: Data Cell과 Bit Cell 사이에 XNOR 연산을 수행합니다.                   ===== Xnor 함수 =====
     def Xnor(self, planenum):                                                   # planenum: XNOR 연산을 수행할 plane 번호
         xnor_result = ~self.Xor(planenum)                                       # Xor()의 결과에 not 연산 수행
         self.cell_data[planenum] = xnor_result                                  # Data Cell에 xnor_result 저장
 
-    # Not: Bit Cell에서 NOT 연산을 수행합니다.
+    # Not: Bit Cell에서 NOT 연산을 수행합니다.                                    ===== Not 함수 =====
     def Not(self, planenum):                                                    # planenum: NOT 연산을 수행할 plane 번호
         not_val = self.Bin2Dec(planenum)                                        # not_val: NOT 연산을 수행할 값 (Bit Cell)
         not_result = ~not_val                                                   # not_result: NOT 연산 수행 결과
         self.cell_data[planenum] = not_result                                   # Data Cell에 not_result 저장
 
-    # StaticOne: Static One Plane의 Data Cell의 값을 1로 고정합니다.
+    # StaticOne: Static One Plane의 Data Cell의 값을 1로 고정합니다.              ===== StaticOne 함수 =====
     def StaticOne(self):
         planenum = self.FindPlane("One")                                        # 역할이 One인 plane 찾기
         for num in planenum:                                                    # plane 리스트의 모든 원소에 대해 반복
             self.cell_data[num] = 1                                             # 해당 plane의 data cell의 값을 1로 설정
 
-    # Shift: 입력한 plane의 모든 bit cell의 값을 한 칸씩 시계방향으로 옮기고, 첫 번쨰 셀의 값은 0으로 바꿉니다.
+    # Shift: 입력한 plane의 모든 bit cell의 값을 한 번 Shift합니다.                ===== Shift 함수 =====
     def Shift(self, planenum):                                                  # planenum: Shift를 수행할 plane 번호
         bin = self.cell_bit[planenum]                                           # bin: 해당 plane의 bit cell의 비트 값을 저장한 리스트
         raw_bin = Plval2Raw(planenum, bin)                                      # bin의 비트 값을 자릿값 순서대로 정렬
@@ -205,7 +205,7 @@ class Cube:
 
     # Main Function: Input, Output, Load, Save, Clear, Execute, Rotate를 수행하는 function입니다. ======================================================================
 
-    # Input: Input Plane에서 값을 받아옵니다.
+    # Input: Input Plane에서 값을 받아옵니다.                                     ===== Input 함수 =====
     def Input(self, input_value):                                               # input_value: 입력받은 값
         planenum = self.FindPlane("Input")                                      # planenum: 모든 Input Cell의 번호를 담은 list
         if len(planenum) == 0:                                                  # Input Plane이 없을 때:
@@ -214,7 +214,7 @@ class Cube:
         for num in planenum:                                                    # planenum의 모든 값에 대해 반복
             self.cell_data[num] = input_value                                   # Data Cell에 입력 받은 값 저장
 
-    # Output: Output Plane의 값을 출력합니다.
+    # Output: Output Plane의 값을 출력합니다.                                     ===== Output 함수 =====
     def Output(self):
         planenum = self.FindPlane("Output")                                     # planenum: 모든 Output Cell의 번호를 담은 list
         if len(planenum) == 0:                                                  # Output Plane이 없을 때:
@@ -225,22 +225,60 @@ class Cube:
             return None                                                         #   Output 함수 종료
         return self.cell_data[planenum[0]]                                      # Data Cell의 값 반환
 
-    # Load: Data Cell의 값을 Bit Cell에 저장합니다.
-    def Load(self, ):
-        pass
+    # Load: Data Cell의 값을 Bit Cell에 저장합니다.                               ===== Load 함수 =====
+    def Load(self, plane = -1):
+        if plane == -1:                                                         # 대상 Plane 번호가 -1일 때:
+            for planenum in range(6):                                           #   모든 면에 대해 Load 실행
+                raw_bin = self.Dec2Bin(planenum)                                #   planenum 번째 Plane의 Bit Cell
+                bin = self.Raw2Plval(planenum, raw_bin)                         #   Bit Cell의 값을 자릿값 설정에 맞게 순서 바꾸기
+                for bitnum in range(8):                                         #   planenum 번째 Plane의 bitnum 번째 Bit Cell에
+                    self.cell_bit[planenum][bitnum] = bin[bitnum]               #   bitnum 번째 인덱스의 bin의 값 대입
 
-    # Save: Bit Cell의 값을 Data Cell에 저장합니다.
-    def Save(self, ):
-        pass
+        elif (plane > 5) | (plane < -1):                                        # 대상 Plane 번호가 범위 밖일 때:
+            logging.error("Plane Number Should be -1, 0, 1, ..., or 5")         #   error 처리 (logging)
+            return None                                                         #   Load 함수 종료
 
-    # Clear: Plane의 Bit Cell과 Data Cell의 값을 초기 상태로 되돌립니다.
-    def Clear(self, ):
-        pass
+        else:                                                                   # 대상 Plane 번호가 0-5일 때:
+            raw_bin = self.Dec2Bin(plane)                                       #   plane 번째 Plane의 Bit Cell
+            bin - self.Raw2Plval(plane, raw_bin)                                #   Bit Cell의 값을 자릿값 설정에 맞게 순서 바꾸기
+            for bitnum in range(8):                                             #   plane 번째 Plane의 bitnum 번째 Bit Cell에
+                self.cell_bit[plane][bitnum] = bin[bitnum]                      #   bitnum 번째 인덱스의 bin의 값 대입
 
-    # Execute: 비트 연산(AND, NAND, OR, NOR, XOR, XNOR, NOT)과 Shift 연산을 수행합니다.
+    # Save: Bit Cell의 값을 Data Cell에 저장합니다.                               ===== Save 함수 =====
+    def Save(self, plane = -1):
+        if plane == -1:                                                         # 대상 Plane 번호가 -1일 때:
+            for planenum in range(6):                                           #   모든 Plane에 대해 Save 실행
+                self.cell_data[planenum] = self.Bit2Dec(planenum)               #   planenum 번째 Plane에서 Save
+
+        elif (plane > 5) | (plane < -1):                                        # 대상 Plane 번호가 범위 밖일 때:
+            logging.error("Plane Number Should be -1, 0, 1, ..., or 5")         #   error 처리 (logging)
+            return None                                                         #   Save 함수 종료
+
+        else:                                                                   # 대상 Plane 번호가 0-5일 때:
+            self.cell_data[plane] = self.Bit2Dec(plane)                         #   plane 번째 Plane에서 Save
+
+    # Clear: Plane의 Bit Cell과 Data Cell의 값을 초기 상태로 되돌립니다.           ===== Clear 함수 =====
+    def Clear(self, plane = -1):
+        if plane == -1:                                                         # 대상 plane 번호가 -1일 떄:
+            self.cell_data =  [0] *6                                            #   모든 Plane의 Data Cell 초기화
+            self.cell_bit  = [[0] *8] *6                                        #   모든 Plane의 Bit Cell 초기화
+            self.cell_core =   0                                                #   Core Cell 초기화
+            self.StaticOne()                                                    #   Static One 셀 1로 초기화
+
+        elif (plane > 5) | (plane < -1):                                        # 대상 Plane 번호가 범위 밖일 때:
+            logging.error("Plane Number Should be -1, 0, 1, ..., or 5")         #   error 처리 (logging)
+            return None                                                         #   Clear 함수 종료
+
+        else:                                                                   # 대상 Plane 번호가 0-5일 때:
+            self.cell_data[plane] = 0                                           #   Data Cell 초기화
+            self.cell_bit[plane] = [0] *8                                       #   Bit Cell 초기화
+            if self.cell_func[plane] = "One":                                   # 대상 Plane이 Static One Cell일 때:
+                self.cell_data[plane] = 1                                       #   Data Cell을 1로 초기화
+
+    # Execute: 비트 연산과 Shift 연산을 수행합니다.                                ===== Execute 험수 =====
     def Execute(self, plane = -1):
         pass
 
-    # Rotate: 입력 받은 회전 기호에 따라 큐브의 층을 회전시킵니다.
+    # Rotate: 입력 받은 회전 기호에 따라 큐브의 층을 회전시킵니다.                  ===== Rotate 함수 =====
     def Rotate(self, ):
         pass

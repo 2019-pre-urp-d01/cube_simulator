@@ -12,6 +12,9 @@ DEFAULT_LEFT_BIT_DICT  = {"l0":[1,0], "l1":[2,0], "l2":[4,0], "l3":[8,0], "l4":[
 DEFAULT_BACK_BIT_DICT  = {"b0":[1,0], "b1":[2,0], "b2":[4,0], "b3":[8,0], "b4":[16,0], "b5":[32,0], "b6":[64,0], "b7":[128,0]}
 DEFAULT_DOWN_BIT_DICT  = {"d0":[1,0], "d1":[2,0], "d2":[4,0], "d3":[8,0], "d4":[16,0], "d5":[32,0], "d6":[64,0], "d7":[128,0]}
 
+rotate_list = ["U", "D", "L", "R", "F", "B", "u", "d", "l", "r", "f", "b", "M", "S", "E"]
+index_list = ["0", "1", "2", "3", "4", "5", "6"]
+
 class Cube:
     # Cube initialization
     def __init__(self, cell_function_dict=DEFAULT_FUNCTION, cell_bit_up_dict=DEFAULT_UP_BIT_DICT, cell_bit_front_dict=DEFAULT_FRONT_BIT_DICT, cell_bit_right_dict=DEFAULT_RIGHT_BIT_DICT, cell_bit_left_dict=DEFAULT_LEFT_BIT_DICT, cell_bit_back_dict=DEFAULT_BACK_BIT_DICT, cell_bit_down_dict=DEFAULT_DOWN_BIT_DICT):
@@ -233,10 +236,10 @@ class Cubes:
         self.cube = Cube()
         self.cubes.append(self.cube)
 
+
         func_dict, ubit_dict, fbit_dict, rbit_dict, lbit_dict, bbit_dict, dbit_dict = LoadCfg(fileLoc)
         self.cube = Cube(func_dict, ubit_dict, fbit_dict, rbit_dict, lbit_dict, bbit_dict, dbit_dict)
-        self.cubes.append(self.cube)
-
+        
     # Create one cube, and set pointers
     def CreateCubeOnDirection(self, cube_structure, direction="in"):
         new_cube = Cube() #새로운 큐브를 제작함
@@ -254,6 +257,13 @@ class Cubes:
     def Execute(self, script = ""):
         script_index = 0 #매길 인덱스들
         result = ""
+        if script.count("(") == script.count(")"):
+            if script.count(")") == 0:
+                logging.warning("Can't find ')', please write it.")
+                raise CoreCellCmdError_NO
+            else:
+                logging.warning("('s count and )'s count are not match, please rewrite it.")
+                raise CoreCellCmdError_COUNT
         s_word = script[script_index] #스크립트의 한글자 한글자씩 분석을 할 거기 때문에 인덱스로 할당함
         while script_index < len(script):
             if s_word in rotate_list:
@@ -279,13 +289,43 @@ class Cubes:
             elif s_word == "*": logging.info("%s: Load"%s); self.cube.load() #load
             elif s_word == "=": logging.info("%s: Save"%s); self.cube.save() #save
             elif s_word == "C": logging.info("%s: Clear"%s); self.cube.clear() #clear
-            elif s_word == "(": pass #감산기, 가산기 기능으로 변경할 예정
-            elif s_word == ")": pass
-            elif s_word == "!": pass
-            elif s_word == "-": pass
-            elif s_word == "+": pass
-            elif s_word == "m": pass
-            elif s_word == "p": pass
+            elif s == "(":
+                if self.cube.cell_core != 0:
+                    logging.info("%s: If open, Core Cell is Not Zero:%d"%(s_word,self.cube.cell_core))
+                    # par_stack.append(script_index+1)
+                else:
+                    logging.info("%s: If open, Core Cell is Zero"%s_word)
+                    locate = script_index+1
+                    level = 0
+                    # Need to converted into stack... for awesomeness
+                    while locate < len(scr):
+                        if script[locate] == "(": level += 1
+                        elif script[locate] == ")":
+                            if level > 0: level -= 1
+                            else: break
+                        locate += 1
+                    script_index = locate
+            elif s == ")":
+                if self.cube.cell_core != 0:
+                    logging.info("%s: If close, Core Cell is Not Zero:%d"%(s_word,self.cube.cell_core))
+                    locate = script_index-1
+                    level = 0
+                    # Need to converted into stack... for awesomeness
+                    while locate > 0:
+                        if script[locate] == ")": level += 1
+                        elif script[locate] == "(":
+                            if level > 0: level -= 1
+                            else: break
+                        loc -= 1
+                    script_index = locate
+                else:
+                    logging.info("%s If close, Core Cell is Zero"%s_word)
+                    # par_stack.append(script_index+1)
+            elif s == "!": logging.info("%s: Core <- Input"%s_word); self.cube.cell_core = self.cube.cell_data[0]
+            elif s == "-": logging.info("%s: Core -= Input"%s_word); self.cube.cell_core -= self.cube.cell_data[0]
+            elif s == "+": logging.info("%s: Core += Input"%s_word); self.cube.cell_core += self.cube.cell_data[0]
+            elif s == "m": logging.info("%s: Core - 1"%s_word); self.cube.cell_core -= 1 #나중에 여기 수정해야 한다!!
+            elif s == "p": logging.info("%s: Core + 1"%s_word); self.cube.cell_core += 1
             elif s_word == "[":
                 if self.cube.hyper_in == None: new_cube = self.CreateCubeOnDirection(self.cube, "in")
                 else: new_cube = self.cube.hyper_in

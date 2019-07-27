@@ -17,7 +17,7 @@ DEF_DBIT_PLVAL = {0:1, 1:2, 2:4, 3:8, 4:16, 5:32, 6:64, 7:128}
 
 class Cube:
 
-    # Cube initialization: Cube의 initial state를 설정합니다.
+    # Cube initialization: Cube의 initial state를 설정합니다. =========================================================================================================
     def __init__(self, cell_func_dict=DEF_FUNC, cell_ubit_plval_dict=DEF_UBIT_PLVAL, cell_fbit_plval_dict=DEF_FBIT_PLVAL, cell_rbit_plval_dict=DEF_RBIT_PLVAL, cell_lbit_plval_dict=DEF_LBIT_PLVAL, cell_bbit_plval_dict=DEF_BBIT_PLVAL, cell_dbit_plva_dict=DEF_DBIT_PLVAL):
         self.hyper_in  = None
         self.hyper_out = None
@@ -70,7 +70,7 @@ class Cube:
         # Core cell에 저장된 값을 나타내는 variable입니다.
         self.cell_core = 0
 
-    # Sub Function: Input, Output, Inout, Load, Save, Clear, Execute, Rotate를 수행하는 데 사용하는 function입니다.
+    # Sub Function: Input, Output, Load, Save, Clear, Execute, Rotate를 수행하는 데 사용하는 function입니다. ================================================================
 
     # Bin2Dec: Bit Cell의 Binary를 Data Cell에 저장할 Demical로 바꿉니다.
     def Bin2Dec(self, planenum):                                                # planenum: 연산을 수행할 plane의 번호
@@ -203,19 +203,27 @@ class Cube:
         bin = Raw2Plval(planenum, raw_bin)                                      # raw_bin의 비트 값을 해당 면의 자릿값 순서대로 정렬
         self.cell_bit[planenum] = bin                                           # 해당 plane의 bit cell의 비트 값에 shift한 비트 값 저장
 
-    # Main Function: Input, Output, Inout, Load, Save, Clear, Execute, Rotate를 수행하는 function입니다.
+    # Main Function: Input, Output, Load, Save, Clear, Execute, Rotate를 수행하는 function입니다. ======================================================================
 
     # Input: Input Plane에서 값을 받아옵니다.
-    def Input(self, ):
-        pass
+    def Input(self, input_value):                                               # input_value: 입력받은 값
+        planenum = self.FindPlane("Input")                                      # planenum: 모든 Input Cell의 번호를 담은 list
+        if len(planenum) == 0:                                                  # Input Plane이 없을 때:
+            logging.error("Couldn't find Input Plane")                          #   error 처리 (logging)
+            return None                                                         #   Input 함수 종료
+        for num in planenum:                                                    # planenum의 모든 값에 대해 반복
+            self.cell_data[num] = input_value                                   # Data Cell에 입력 받은 값 저장
 
     # Output: Output Plane의 값을 출력합니다.
-    def Output(self, ):
-        pass
-
-    # Inout: Inout Plane에서 값을 받아오거나 출력합니다.
-    def Inout(self, ):
-        pass
+    def Output(self):
+        planenum = self.FindPlane("Output")                                     # planenum: 모든 Output Cell의 번호를 담은 list
+        if len(planenum) == 0:                                                  # Output Plane이 없을 때:
+            logging.error("Couldn't find Output Plane")                         #   error 처리 (logging)
+            return None                                                         #   Output 함수 종료
+        elif len(planenum) > 1:                                                 # Output Plane이 여러 개일 떄:
+            logging.error("Nonsense cube; more than one output cell")           #   error 처리 (logging)
+            return None                                                         #   Output 함수 종료
+        return self.cell_data[planenum[0]]                                      # Data Cell의 값 반환
 
     # Load: Data Cell의 값을 Bit Cell에 저장합니다.
     def Load(self, ):

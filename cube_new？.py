@@ -11,9 +11,9 @@ DEF_FUNC = ["Input", "One", "Not", "Or", "And", "Output"]
 DEF_BIT_PLVAL = [[1, 2, 4, 8, 16, 32, 64, 128]] *6
 
 # 회전 기호를 모아 둔 list입니다.
-one_layer_rot_list =    ["U", "D", "L", "R", "F", "B"]                          # 한 줄 회전
-two_layers_rot_list =   ["u", "d", "l", "r", "f", "b"]                          # 두 줄 회전
-center_layer_rot_list = ["M", "S", "E"]                                         # 가운데 줄 회전
+one_layer_rot_list =    ['U', 'F', 'R', 'L', 'B', 'D']                          # 한 줄 회전
+two_layers_rot_list =   ['u', 'f', 'r', 'l', 'b', 'd']                          # 두 줄 회전
+center_layer_rot_list = ['M', 'S', 'E']                                         # 가운데 줄 회전
 
 rotate_list = one_layer_rot_list + two_layers_rot_list + center_layer_rot_list  # 회전 기호
 
@@ -152,6 +152,104 @@ class Cube:
         bin = Raw2Plval(planenum, raw_bin)                                      # raw_bin의 Bit 값을 해당 면의 자릿값 순서대로 정렬
         self.cell_bit[planenum] = bin                                           # 해당 plane의 Bit Cell의 Bit 값에 shift한 Bit 값 저장
 
+    # RotPlane: 입력한 Plane을 회전시킵니다.                                      ===== RotPlane 함수 =====
+    def RotPlane(self, plane, direction):                                       # plane: 회전할 면, direction: 시계/반시계 방향
+
+        if direction == 0:                                                      # direction이 0일 때: 시계 방향으로 회전
+            temp_edge   = self.cell_bit[plane][7]                               # temp_edge: 자리 바꿀 때 임시 저장 (엣지 조각)
+            temp_corner = self.cell_bit[plane][6]                               # temp_corner: 자리 바꿀 때 임시 저장 (코너 조각)
+            for bit in [7, 6, 5, 4, 3, 2]:
+                self.cell_bit[plane][bit] = self.cell_bit[plane][bit - 2]
+            self.cell_bit[plane][1] = temp_edge
+            self.cell_bit[plane][0] = temp_corner
+
+        else: # direction == 1                                                  # direction이 1일 때: 반시계 방향으로 회전
+            temp_corner = self.cell_bit[p][0]                                   # temp_corner: 자리 바꿀 때 임시 저장 (코너 조각)
+            temp_edge   = self.cell_bit[p][1]                                   # temp_edge: 자리 바꿀 때 임시 저장 (엣지 조각)
+            for bit in [0, 1, 2, 3, 4, 5]:
+                self.cell_bit[plane][bit] = self.cell_bit[plane][bit + 2]
+            self.cell_bit[plane][7] = temp_edge
+
+    # RotLine: 입력한 plane 주위의 layer를 회전시킵니다.                           ===== RotLine 함수 =====
+    def RotLine(self, plane, direction):                                        # plane: 회전할 면, direction: 시계/반시계 방향
+
+        if   plane == 0: planes = [4, 2, 1, 3]; bits = [[0, 7, 6]] *4           # U Plane 주변 Plane과 Bit Cell 번호
+        elif plane == 1: planes = [0, 2, 5, 3]; bits = [[4, 3, 2], [6, 5, 4], [0, 7, 6], [2, 1, 0]] # F Plane 주변 Plane과 Bit Cell 번호
+        elif plane == 2: planes = [0, 4, 5, 1]; bits = [[2, 1, 0], [6, 5, 4], [2, 1, 0], [2, 1, 0]] # R Plane 주변 Plane과 Bit Cell 번호
+        elif plane == 3: planes = [0, 1, 5, 4]; bits = [[6, 5, 4], [6, 5, 4], [6, 5, 4], [2, 1, 0]] # L Plane 주변 Plane과 Bit Cell 번호
+        elif plane == 4: planes = [0, 3, 5, 2]; bits = [[0, 7, 6], [6, 5, 4], [4, 3, 2], [2, 1, 0]] # B Plane 주변 Plane과 Bit Cell 번호
+        elif plane == 5: planes = [1, 2, 4, 3]; bits = [[2, 1, 0]] *4           # D Plane 주변 Plane과 Bit Cell 번호
+
+        if direction == 0:                                                      # direction이 0일 때: 시계 방향으로 회전
+            temp1 = self.cell_bit[planes[3]][bits[3][0]]
+            temp2 = self.cell_bit[planes[3]][bits[3][1]]                        # temp1, temp2, temp3: 자리 바꿀 떄 임시 저장
+            temp3 = self.cell_bit[planes[3]][bits[3][2]]
+            for i in [3, 2, 1]:
+                for j in range(3):
+                    self.cell_bit[planes[i]][bits[i][j]] = self.cell_bit[planes[i-1]][bits[i-1][j]]
+            self.cell_bit[planes[0]][bits[0][0]] = temp1
+            self.cell_bit[planes[0]][bits[0][1]] = temp2
+            self.cell_bit[planes[0]][bits[0][2]] = temp3
+
+        else: # direction == 1                                                  # direction이 1일 때: 반시계 방향으로 회전
+            temp1 = self.cell_bit[planes[0]][bits[0][0]]
+            temp2 = self.cell_bit[planes[0]][bits[0][1]]                        # temp1, temp2, temp3: 자리 바꿀 떄 임시 저장
+            temp3 = self.cell_bit[planes[0]][bits[0][2]]
+            for i in [0, 1, 2]:
+                for j in range(3):
+                    self.cell_bit[planes[i]][bits[i][j]] = self.cell_bit[planes[i+1]][bits[i+1][j]]
+            self.cell_bit[planes[3]][bits[3][0]] = temp1
+            self.cell_bit[planes[3]][bits[3][1]] = temp2
+            self.cell_bit[planes[3]][bits[3][2]] = temp3
+
+    # RotMidLine: 입력한 회전을 실행합니다.                                       ===== RotMidLine 함수 =====
+    def RotMidLine(self, plane, mode, direction):                               # plane: 기준 Plane, mode: 회전할 층, direction: 시계/반시계 방향
+        # mode - 0: M, 1: S, 2: E
+        # plane == 0 or 5: mode = 2, plane == 1 or 4: mode == 1, plane == 2 or 3: mode = 0
+        # plane == 0 or 2 or 4: flip direction
+
+        if plane == -1: pass
+        elif plane == 0: mode = 2; direction = 1 if direction == 0 else 0
+        elif plane == 1: mode = 1
+        elif plane == 2: mode = 0; direction = 1 if direction == 0 else 0
+        elif plane == 3: mode = 0
+        elif plane == 4: mode = 1; direction = 1 if direction == 0 else 0
+        elif plane == 5: mode = 2
+
+        if   mode == 0: planes = [0, 1, 5, 4]; bits = [[7, 3], [7, 3], [7, 3], [3, 7]] # M일 때
+        elif mode == 1: planes = [0, 2, 5, 3]; bits = [[5, 1], [7, 3], [1, 5], [3, 7]] # S일 때
+        elif mode == 2: planes = [1, 2, 4, 3]; bits = [[5, 1]] *4               # E일 때
+
+        if direction == 0:                                                      # direction이 0일 때: 시계 방향으로 회전
+            temp_edge1 = self.cell_bit[planes[3]][bits[3][0]]
+            temp_edge2 = self.cell_bit[planes[3]][bits[3][1]]
+            temp_data  = self.cell_data[planes[3]]
+            temp_func  = self.cell_func[planes[3]]
+            for i in [3, 2, 1]:
+                for j in range(2):
+                    self.cell_bit[planes[i]][bits[i][j]] = self.cell_bit[planes[i-1]][bit[i-1][j]]
+                self.cell_data[planes[i]] = self.cell_data[planes[i-1]]
+                self.cell_func[planes[i]] = self.cell_func[planes[i-1]]
+            self.cell_bit[planes[0]][bits[0][0]] = temp_edge1
+            self.cell_bit[planes[0]][bits[0][0]] = temp_edge2
+            self.cell_data[planes[0]]            = temp_data
+            self.cell_func[planes[0]]            = temp_func
+
+        else: # direction == 1                                                  # direction이 1일 때: 반시계 방향으로 회전
+            temp_edge1 = self.cell_bit[planes[0]][bits[0][0]]
+            temp_edge2 = self.cell_bit[planes[0]][bits[0][1]]
+            temp_data  = self.cell_data[planes[0]]
+            temp_func  = self.cell_func[planes[0]]
+            for i in [0, 1, 2]:
+                for j in range(2):
+                    self.cell_bit[planes[i]][bits[i][j]] = self.cell_bit[planes[i+1]][bit[i+1][j]]
+                self.cell_data[planes[i]] = self.cell_data[planes[i+1]]
+                self.cell_func[planes[i]] = self.cell_func[planes[i+1]]
+            self.cell_bit[planes[3]][bits[0][0]] = temp_edge1
+            self.cell_bit[planes[3]][bits[0][0]] = temp_edge2
+            self.cell_data[planes[3]]            = temp_data
+            self.cell_func[planes[3]]            = temp_func
+
     # Main Function: Input, Output, Load, Save, Clear, Execute, Rotate를 수행하는 function입니다. ======================================
 
     # Input: Input Plane에서 값을 받아옵니다.                                     ===== Input 함수 =====
@@ -250,20 +348,46 @@ class Cube:
             return None                                                         #   Execute 함수 종료
 
         else:                                                                   # 대상 Plane 번호가 0-5일 때:
-            if self.cell_function[plane] in ["Input", "Output", "Inout", "One"]:#   plane의 역할이 Input/Output/Inout/Static One일 떄:
+            if self.cell_func[plane] in ["Input", "Output", "Inout", "One"]:    #   plane의 역할이 Input/Output/Inout/Static One일 떄:
                 pass                                                            #   실행 안 함
-            elif self.cell_function[plane] == "And": self.And(plane)            #   AND  연산 실행
-            elif self.cell_function[plane] == "Nand": self.Nand(plane)          #   NAND 연산 실행
-            elif self.cell_function[plane] == "Or": self.Or(plane)              #   Or   연산 실행
-            elif self.cell_function[plane] == "Nor": self.Nor(plane)            #   NOR  연산 실행
-            elif self.cell_function[plane] == "Xor": self.Xor(plane)            #   XOR  연산 실행
-            elif self.cell_function[plane] == "Xnor": self.Xnor(plane)          #   XNOR 연산 실행
-            elif self.cell_function[plane] == "Not": self.Not(plane)            #   NOT  연산 실행
-            elif self.cell_function[plane] == "Shift": self.Shift(plane)        #   Shift     실행
+            elif self.cell_func[plane] == "And": self.And(plane)                #   AND  연산 실행
+            elif self.cell_func[plane] == "Nand": self.Nand(plane)              #   NAND 연산 실행
+            elif self.cell_func[plane] == "Or": self.Or(plane)                  #   Or   연산 실행
+            elif self.cell_func[plane] == "Nor": self.Nor(plane)                #   NOR  연산 실행
+            elif self.cell_func[plane] == "Xor": self.Xor(plane)                #   XOR  연산 실행
+            elif self.cell_func[plane] == "Xnor": self.Xnor(plane)              #   XNOR 연산 실행
+            elif self.cell_func[plane] == "Not": self.Not(plane)                #   NOT  연산 실행
+            elif self.cell_func[plane] == "Shift": self.Shift(plane)            #   Shift     실행
 
     # Rotate: 입력 받은 회전 기호에 따라 큐브의 층을 회전시킵니다.                  ===== Rotate 함수 =====
-    def Rotate(self, rotation):                                                 # rotation: 회전 기호
-        pass
+    def Rotate(self, rot):                                                      # rot: 회전 기호
+
+        if rot[0] in one_layer_rot_list:                                        # 대문자 회전 기호: 한 층만 회전
+            plane = one_layer_rot_list.index(rot[0])                            # plane: 회전하려는 Plane 번호
+            if len(rot) == 1:                                                   # 회전 기호가 한 글자: ' 없음 - 시계 방향
+                self.RotPlane(plane, 0)                                         #   Plane 시계 방향으로 회전
+                self.RotLine(plane, 0)                                          #   Plane 주위 layer 시계 방향으로 회전
+            else: # len(rot) == 2                                               # 회전 기호가 두 글자: ' 있음 - 반시계 방향
+                self.RotPlane(plane, 1)                                         #   Plane 반시계 방향으로 회전
+                self.RotLine(plane, 1)                                          #   Plane 주위 layer 반시계 방향으로 회전
+
+        elif rot[0] in two_layers_rot_list:                                     # 소문자 회전 기호: 두 층을 회전
+            plane = two_layers_rot_list.index(rot[0])                           # plane: 회전하려는 Plane 번호
+            if len(rot) == 1:                                                   # 회전 기호가 한 글자: ' 없음 - 시계 방향
+                self.RotPlane(plane, 0)                                         #   Plane 시계 방향으로 회전
+                self.RotLine(plane, 0)                                          #   Plane 주위 layer 시계 방향으로 회전
+                self.RotMidLine(plane, 0, 0)                                    #   Plane 옆 layer 시계 방향으로 회전
+            else: # len(rot) == 2                                               # 회전 기호가 두 글자: ' 있음 - 반시계 방향
+                self.RotPlane(plane, 1)                                         #   Plane 반시계 방향으로 회전
+                self.RotLine(plane, 1)                                          #   Plane 주위 layer 반시계 방향으로 회전
+                self.RotMidLine(plane, 0, 1)                                    #   Plane 옆 layer 반시계 방향으로 회전
+
+        elif rot[0] in center_layer_rot_list:                                   # M, S, E: 가운데 층을 회전
+            mode = center_layer_rot_list.index(rot[0])                          # Mode: 회전하려는 layer 방향
+            if len(rot) == 1:                                                   # 회전 기호가 한 글자: ' 없음 - 시계 방향
+                self.RotMidLine(-1, mode, direction)                            #   가운데 layer 시계 방향으로 회전
+            else: #len(rot) == 2                                                # 회전 기호가 두 글자: ' 있음 - 반시계 방향
+                self.RotMidLine(-1, mode, direction)                            #   가운데 layer 반시계 방향으로 회전
 
 
 class Cubes:

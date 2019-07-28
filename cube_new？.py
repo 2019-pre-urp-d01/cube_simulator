@@ -389,6 +389,73 @@ class Cube:
             else: #len(rot) == 2                                                # 회전 기호가 두 글자: ' 있음 - 반시계 방향
                 self.RotMidLine(-1, mode, direction)                            #   가운데 layer 반시계 방향으로 회전
 
+    # Core Function: 'Cubes' class에서 사용하는 함수입니다. ===========================================================================
+
+    # ShowPlane: 입력한 Plane의 Bit Cell의 비트 값과 자릿값, Data Cell의 값을 보여줍니다. ===== ShowPlane 함수 =====
+    def ShowPlane(self, plane):                                                 # plane: 표시할 Plane 번호
+        line_one   = "|  %3d %3d %3d  " % (self.cell_bit_plval[plane][6], self.cell_bit_plval[plane][7], self.cell_bit_plval[plane][0])
+        line_two   = "|  %3d %3d %3d  " % (self.cell_bit[plane][6],       self.cell_bit[plane][7],       self.cell_bit[plane][0])
+        line_three = "|  %3d %d %s %3d  " % (self.cell_bit_plval[plane][5], plane, self.one_layer_rot_list[plane], self.cell_bit_plval[plane][1])
+        line_four  = "|  %3d %3d %3d  " % (self.cell_bit[plane][5],       self.cell_data[plane],         self.cell_bit[plane][1])
+        line_five  = "|  %3d %3d %3d  " % (self.cell_bit_plval[plane][4], self.cell_bit_plval[plane][3], self.cell_bit_plval[plane][2])
+        line_six   = "|  %3d %3d %3d  " % (self.cell_bit[plane][4],       self.cell_bit[plane][3],       self.cell_bit[plane][2])
+        return [line_one, line_two, line_three, line_four, line_five, line_six]
+
+    # Show: 프로그램을 실행했을 때 명령어 하나하나마다의 큐브의 상태를 보여줍니다.    ===== Show 함수 =====
+    def Show(self):
+        print("Sum of Bit Cell: ", end = '')                                    # Bit Cell의 값 표시
+        for i in range(6):
+            print("Face %s %d, " % (one_layer_rot_list[i], self.Bit2Dec(i)), end = '')
+        print("Core Cell: %d" % self.cell_core, end = '')                       # Core Cell의 값 표시
+        print()                                                                 # 줄바꿈
+        print(" " *17 + "-" *15)
+        print(" " *16 + self.ShowPlane(0)[0] + "|")
+        print(" " *16 + self.ShowPlane(0)[1] + "|")
+        print(" " *16 + self.ShowPlane(0)[2] + "| Plane UP(0):")
+        print(" " *16 + self.ShowPlane(0)[3] + "| " + self.cell_func[0] + "Plane")
+        print(" " *16 + self.ShowPlane(0)[4] + "|")
+        print(" " *16 + self.ShowPlane(0)[5] + "|")
+        print(" " + "-" *15 + " " + "-" *15 + " " + "-" *15 + " " + "-" *15)
+        print(self.ShowPlane(3)[0] + self.ShowPlane(1)[0] + self.ShowPlane(2)[0] + self.ShowPlane(4)[0] + "|")
+        print(self.ShowPlane(3)[1] + self.ShowPlane(1)[1] + self.ShowPlane(2)[1] + self.ShowPlane(4)[1] + "| FRONT(1): " + self.cell_func[1])
+        print(self.ShowPlane(3)[2] + self.ShowPlane(1)[2] + self.ShowPlane(2)[2] + self.ShowPlane(4)[2] + "| RIGHT(2): " + self.cell_func[2])
+        print(self.ShowPlane(3)[3] + self.ShowPlane(1)[3] + self.ShowPlane(2)[3] + self.ShowPlane(4)[3] + "| LEFT (3): " + self.cell_func[3])
+        print(self.ShowPlane(3)[4] + self.ShowPlane(1)[4] + self.ShowPlane(2)[4] + self.ShowPlane(4)[4] + "| BACK (4): " + self.cell_func[4])
+        print(self.ShowPlane(3)[5] + self.ShowPlane(1)[5] + self.ShowPlane(2)[5] + self.ShowPlane(4)[5] + "|")
+        print(" " + "-" *15 + " " + "-" *15 + " " + "-" *15 + " " + "-" *15)
+        print(" " *16 + self.ShowPlane(5)[0] + "|")
+        print(" " *16 + self.ShowPlane(5)[1] + "|")
+        print(" " *16 + self.ShowPlane(5)[2] + "| Plane DOWN(5):")
+        print(" " *16 + self.ShowPlane(5)[3] + "| " + self.cell_func[5] + "Plane")
+        print(" " *16 + self.ShowPlane(5)[4] + "|")
+        print(" " *16 + self.ShowPlane(5)[5] + "|")
+        print(" " *17 + "-" *15)
+        print()
+
+    # Printing Form
+    # [                 ---------------]
+    # [                |  plv plv plv  |]                                       # plv: 자릿값
+    # [                |  bit bit bit  |]                                       # bit: 비트 값
+    # [                |  plv pln plv  |  Plane UP(0):]                         # pln: Plane 번호 + Plane 방향
+    # [                |  bit dta bit  |  Input Plane]                          # dta: 데이터 값
+    # [                |  plv plv plv  |]
+    # [                |  bit bit bit  |]
+    # [ --------------- --------------- --------------- ---------------]
+    # [|  plv plv plv  |  plv plv plv  |  plv plv plv  |  plv plv plv  |]
+    # [|  bit bit bit  |  bit bit bit  |  bit bit bit  |  bit bit bit  | FRONT(1): Static One]
+    # [|  plv pln plv  |  plv pln plv  |  plv pln plv  |  plv pln plv  | RIGHT(2): AND]
+    # [|  bit dta bit  |  bit dta bit  |  bit dta bit  |  bit dta bit  | LEFT (3): OR]
+    # [|  plv plv plv  |  plv plv plv  |  plv plv plv  |  plv plv plv  | BACK (4): NOT]
+    # [|  bit bit bit  |  bit bit bit  |  bit bit bit  |  bit bit bit  |]
+    # [ --------------- --------------- --------------- ---------------]
+    # [                |  plv plv plv  |]
+    # [                |  bit bit bit  |]
+    # [                |  plv pln plv  |  Plane DOWN(5):]
+    # [                |  bit dta bit  |  Output Plane]
+    # [                |  plv plv plv  |]
+    # [                |  bit bit bit  |]
+    # [                 ---------------]
+
 
 class Cubes:
 
@@ -403,3 +470,13 @@ class Cubes:
         cell_function, cell_bit_place_value = LoadCfg()                         # 사전 설정값 받아오기
         self.cube = Cube(cell_function, cell_bit_place_value)                   # 큐브 생성하기
         self.cubes.append(self.cube)                                            # 리스트에 큐브 추가하기
+
+    # printd: 입력한 script를 명령어 하나씩 분석하면서 해당 명령어와 그에 대한 설명을 출력합니다. ===== printd 함수 =====
+    def printd(self, string, level = 1):
+        if self.c_debug == 0: return None                                       # 출력하지 않음
+        elif self.c_debug < level:                                              # 명령어 기호만 출력
+            if script[1] == "'": print(string[0:2])                             #   회전 기호 + '일 때: 두 글자 출력
+            elif: print(string[0])                                              #   그 외: 첫 글자만 출력
+        elif self.c_debug >= level: print(string)                               # 명령어와 설명 출력
+
+    # createcube

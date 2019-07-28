@@ -239,7 +239,7 @@ class Cubes:
 
         func_dict, ubit_dict, fbit_dict, rbit_dict, lbit_dict, bbit_dict, dbit_dict = LoadCfg(fileLoc)
         self.cube = Cube(func_dict, ubit_dict, fbit_dict, rbit_dict, lbit_dict, bbit_dict, dbit_dict)
-        
+
     # Create one cube, and set pointers
     def CreateCubeOnDirection(self, cube_structure, direction="in"):
         new_cube = Cube() #새로운 큐브를 제작함
@@ -275,15 +275,15 @@ class Cubes:
                 else:
                     logging.info("%s : Rotate"%s_word)
                     self.cube.Rotate(s_word)
-                    
+
             elif s_word in index_list: #명령 확장
                 logging.info("%s Number inputed"%s_word)
-                
+
             elif s_word == 'I': #input
                 print(">"*9+"INPUT"+">"*9, end="")
                 input_ = input()
                 logging.info("%s : Input"%s_word)
-                self.cube.Input(ord(input_[0])) #첫번째 글자 추출 후 아스키 코드로 변환함(한 글자밖에 받을 수 없음)
+                self.cube.Input(ord(input_[0])) #첫 번째 글자 추출 후 아스키 코드로 변환함(한 글자밖에 받을 수 없음)
 
             elif s_word == 'P': #print
                 logging.info("%s : Output -> %s"%(s_word, input_[0]))
@@ -314,7 +314,7 @@ class Cubes:
                             else: break
                         locate += 1
                     script_index = locate
-                    
+
             elif s == ")":
                 if self.cube.cell_core != 0:
                     logging.info("%s: If close, Core Cell is Not Zero:%d"%(s_word,self.cube.cell_core))
@@ -331,7 +331,7 @@ class Cubes:
                 else:
                     logging.info("%s If close, Core Cell is Zero"%s_word)
                     # par_stack.append(script_index+1)
-                    
+
             elif s == "!": logging.info("%s: Core <- Input"%s_word); self.cube.cell_core = self.cube.cell_data[0]
 
             elif s == "-": logging.info("%s: Core -= Input"%s_word); self.cube.cell_core -= self.cube.cell_data[0]
@@ -345,7 +345,7 @@ class Cubes:
             elif s_word == "[":
                 if self.cube.hyper_in == None: new_cube = self.CreateCubeOnDirection(self.cube, "in")
                 else: new_cube = self.cube.hyper_in
-                loggign.info("%s: Move Inside From %s to %s"%(s_word,id(self.cube),id(new_cube)))
+                logging.info("%s: Move Inside From %s to %s"%(s_word,id(self.cube),id(new_cube)))
                 self.cube = new_cube
 
             elif s_word == "]":

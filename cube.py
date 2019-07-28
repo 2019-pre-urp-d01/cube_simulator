@@ -21,6 +21,7 @@ rotate_list = one_layer_rot_list + two_layers_rot_list + center_layer_rot_list  
 index_list = ["0", "1", "2", "3", "4", "5", "6"]                                # 6: 모든 면
 
 
+
 class Cube:
 
     # Cube initialization: Cube의 initial state를 설정합니다. =========================================================================
@@ -498,9 +499,11 @@ class Cubes:
             else:
                 logging.warning("('s count and )'s count are not match, please rewrite it.")
                 raise CoreCellCmdError_COUNT
-        s_word = script[script_index] #스크립트의 한글자 한글자씩 분석을 할 거기 때문에 인덱스로 할당함
+        #스크립트의 한글자 한글자씩 분석을 할 거기 때문에 인덱스로 할당함
 
         while script_index < len(script):
+            print('위로올라옴')
+            s_word = script[script_index]
             if s_word in rotate_list:
                 if script_index+1 < len(script) and script[script_index+1] in ["'"]: #' 붙인 거 판별
                     logging.info("%s : Rotate"%script[script_index:script_index+2]) # 커맨드를 작성한다
@@ -515,18 +518,18 @@ class Cubes:
 
             elif s_word == 'I': #input
                 print(">"*9+"INPUT"+">"*9, end="")
-                input_ = input()
+                inp = input()
                 logging.info("%s : Input"%s_word)
-                self.cube.Input(ord(input_[0])) #첫 번째 글자 추출 후 아스키 코드로 변환함(한 글자밖에 받을 수 없음)
-
+                self.cube.Input(ord(inp[0])) #첫 번째 글자 추출 후 아스키 코드로 변환함(한 글자밖에 받을 수 없음)
+                
             elif s_word == 'P': #print
-                logging.info("%s : Output -> %s"%(s_word, input_[0]))
+                logging.info("%s : Output"%(s_word))
                 if self.c_ascii: result += chr(self.cube.Output())
                 else: result += "%3d "%self.cube.output()
 
             elif s_word == "X": logging.info("%s: Execute"%s_word); self.cube.Execute()  #execute
 
-            elif s_word == "*": logging.info("%s: Load"%s_word); self.cube.Load() #load
+            elif s_word == "*": logging.info("%s: Load"%s_word); self.cube.Load(); #load
 
             elif s_word == "=": logging.info("%s: Save"%s_word); self.cube.Save() #save
 
@@ -608,8 +611,11 @@ class Cubes:
                 logging.warning("please input right Character")
                 script_index += 1
                 continue
+            print(script_index)
 
             script_index += 1
+
+            print(script_index)
 
             if self.c_cube:
                 self.cube.Show() #보여주는 거 작성하는 함수는 아직

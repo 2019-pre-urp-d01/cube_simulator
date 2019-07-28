@@ -61,7 +61,7 @@ if __name__ == "__main__":
     else:
         logging.warning("Input your script")
         str_input = input()
-        Re_input()
+        #Re_input()
 
 
     logging.info("Script Loaded with Length %d"%len(str_input))

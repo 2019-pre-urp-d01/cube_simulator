@@ -34,7 +34,8 @@ class Cube:
 
         self.cell_data = np.zeros(6, dtype = "uint8")                           # list: Data Cell의 값
         self.cell_bit  = [[0] *8] *6                                            # list: Bit Cell의 값
-        self.cell_core =   0                                                    # variable: Core Cell의 값
+        # Rotate 디버깅 시 이 리스트를 cell_bit로 사용하세요: [[1, 3, 5, 2, 4, 6, 7, 0], [2, 5, 4, 0, 1, 7, 3, 6], [3, 7, 0, 1, 2, 5, 6, 4], [4, 1, 7, 6, 2, 3, 5, 0], [5, 0, 1, 4, 6, 3, 7, 2], [6, 5, 7, 2, 3, 4, 1, 0]]
+        self.cell_core = 0                                                      # variable: Core Cell의 값
         self.StaticOne()                                                        # Static One Cell의 값 1로 초기화
 
     # Sub Function: Input, Output, Load, Save, Clear, Execute, Rotate를 수행하는 데 사용하는 function입니다. ================================
@@ -48,7 +49,7 @@ class Cube:
 
     # Dec2Bin: Data Cell의 Demical을 Bit Cell에 저장할 Binary로 바꿉니다.         ===== Dec2Bin 함수 =====
     def Dec2Bin(self, planenum):                                                # planenum: 연산을 수행할 plane의 번호
-        raw_bin = [0, 0, 0, 0, 0, 0, 0, 0]                                      # raw_bin: 순서대로 이진수를 저장할 list
+        raw_bin = [0] *8                                                        # raw_bin: 순서대로 이진수를 저장할 list
         for i in range(8):                                                      # 8개의 Bit Cell에 대하여 반복 수행
             raw_bin[i] = self.cell_data[planenum] >> i & 1                      # raw_bin list의 i번째 원소에 값 저장
         binary = self.Raw2Plval(planenum, raw_bin)                                 # 사전 설정한 자릿값 순서에 맞게 Bit 값 순서 변경
@@ -56,7 +57,7 @@ class Cube:
 
     # Raw2Plval: 2진수 list의 Bit 값이 자릿값 순서대로 정렬되어 있는 것을 설정된 대로 바꿉니다. ===== Raw2Plval 함수 =====
     def Raw2Plval(self, planenum, raw_bin):                                     # planenum: 자릿값 순서를 찾을 면, raw_bin: 순서를 바꿀 Bit 값 list
-        binary = [0, 0, 0, 0, 0, 0, 0, 0]                                       # binary: 정렬된 2진수 list
+        binary = [0] *8                                                         # binary: 정렬된 2진수 list
 
         for ind, plval in enumerate(self.cell_bit_plval[planenum]):             # ind: 인덱스, plval: 자릿값
             if   plval == 1:   binary[ind] = raw_bin[0]                         # 자릿값이   1일 때
@@ -72,7 +73,7 @@ class Cube:
 
     # Plval2Raw: 2진수 list의 Bit 값이 설정된 대로 있는 것을 자릿값 순서대로 정렬합니다. ===== Plval2Raw 함수 =====
     def Plval2Raw(self, planenum, binary):                                      # planenum: 자릿값 순서를 찾을 면, binary: 순서를 바꿀 Bit 값 list
-        raw_bin = [0, 0, 0, 0, 0, 0, 0, 0]                                      # raw_bin: 정렬된 2진수 list
+        raw_bin = [0] *8                                                        # raw_bin: 정렬된 2진수 list
 
         for ind, plval in enumerate(self.cell_bit_plval[planenum]):             # ind: 인덱스, plval: 자릿값
             if   plval == 1:   raw_bin[0] = binary[ind]                         # 자릿값이   1일 때
@@ -182,7 +183,7 @@ class Cube:
         elif plane == 2: planes = [0, 4, 5, 1]; bits = [[2, 1, 0], [6, 5, 4], [2, 1, 0], [2, 1, 0]] # R Plane 주변 Plane과 Bit Cell 번호
         elif plane == 3: planes = [0, 1, 5, 4]; bits = [[6, 5, 4], [6, 5, 4], [6, 5, 4], [2, 1, 0]] # L Plane 주변 Plane과 Bit Cell 번호
         elif plane == 4: planes = [0, 3, 5, 2]; bits = [[0, 7, 6], [6, 5, 4], [4, 3, 2], [2, 1, 0]] # B Plane 주변 Plane과 Bit Cell 번호
-        elif plane == 5: planes = [1, 2, 4, 3]; bits = [[2, 1, 0]] *4           # D Plane 주변 Plane과 Bit Cell 번호
+        elif plane == 5: planes = [1, 2, 4, 3]; bits = [[4, 3, 2]] *4           # D Plane 주변 Plane과 Bit Cell 번호
 
         if direction == 0:                                                      # direction이 0일 때: 시계 방향으로 회전
             temp1 = self.cell_bit[planes[3]][bits[3][0]]
@@ -231,11 +232,11 @@ class Cube:
             temp_func  = self.cell_func[planes[3]]
             for i in [3, 2, 1]:
                 for j in range(2):
-                    self.cell_bit[planes[i]][bits[i][j]] = self.cell_bit[planes[i-1]][bit[i-1][j]]
+                    self.cell_bit[planes[i]][bits[i][j]] = self.cell_bit[planes[i-1]][bits[i-1][j]]
                 self.cell_data[planes[i]] = self.cell_data[planes[i-1]]
                 self.cell_func[planes[i]] = self.cell_func[planes[i-1]]
             self.cell_bit[planes[0]][bits[0][0]] = temp_edge1
-            self.cell_bit[planes[0]][bits[0][0]] = temp_edge2
+            self.cell_bit[planes[0]][bits[0][1]] = temp_edge2
             self.cell_data[planes[0]]            = temp_data
             self.cell_func[planes[0]]            = temp_func
 
@@ -246,11 +247,11 @@ class Cube:
             temp_func  = self.cell_func[planes[0]]
             for i in [0, 1, 2]:
                 for j in range(2):
-                    self.cell_bit[planes[i]][bits[i][j]] = self.cell_bit[planes[i+1]][bit[i+1][j]]
+                    self.cell_bit[planes[i]][bits[i][j]] = self.cell_bit[planes[i+1]][bits[i+1][j]]
                 self.cell_data[planes[i]] = self.cell_data[planes[i+1]]
                 self.cell_func[planes[i]] = self.cell_func[planes[i+1]]
             self.cell_bit[planes[3]][bits[0][0]] = temp_edge1
-            self.cell_bit[planes[3]][bits[0][0]] = temp_edge2
+            self.cell_bit[planes[3]][bits[0][1]] = temp_edge2
             self.cell_data[planes[3]]            = temp_data
             self.cell_func[planes[3]]            = temp_func
 
@@ -388,76 +389,35 @@ class Cube:
         elif rot[0] in center_layer_rot_list:                                   # M, S, E: 가운데 층을 회전
             mode = center_layer_rot_list.index(rot[0])                          # Mode: 회전하려는 layer 방향
             if len(rot) == 1:                                                   # 회전 기호가 한 글자: ' 없음 - 시계 방향
-                self.RotMidLine(-1, mode, direction)                            #   가운데 layer 시계 방향으로 회전
+                self.RotMidLine(-1, mode, 0)                                    #   가운데 layer 시계 방향으로 회전
             else: #len(rot) == 2                                                # 회전 기호가 두 글자: ' 있음 - 반시계 방향
-                self.RotMidLine(-1, mode, direction)                            #   가운데 layer 반시계 방향으로 회전
+                self.RotMidLine(-1, mode, 1)                                    #   가운데 layer 반시계 방향으로 회전
 
     # Core Function: 'Cubes' class에서 사용하는 함수입니다. ===========================================================================
 
     # ShowPlane: 입력한 Plane의 Bit Cell의 비트 값과 자릿값, Data Cell의 값을 보여줍니다. ===== ShowPlane 함수 =====
     def ShowPlane(self, plane):                                                 # plane: 표시할 Plane 번호
-        line_one   = "|  %3d %3d %3d  " % (self.cell_bit_plval[plane][6], self.cell_bit_plval[plane][7], self.cell_bit_plval[plane][0])
-        line_two   = "|  %3d %3d %3d  " % (self.cell_bit[plane][6],       self.cell_bit[plane][7],       self.cell_bit[plane][0])
-        line_three = "|  %3d %d %s %3d  " % (self.cell_bit_plval[plane][5], plane, one_layer_rot_list[plane], self.cell_bit_plval[plane][1])
-        line_four  = "|  %3d %3d %3d  " % (self.cell_bit[plane][5],       self.cell_data[plane],         self.cell_bit[plane][1])
-        line_five  = "|  %3d %3d %3d  " % (self.cell_bit_plval[plane][4], self.cell_bit_plval[plane][3], self.cell_bit_plval[plane][2])
-        line_six   = "|  %3d %3d %3d  " % (self.cell_bit[plane][4],       self.cell_bit[plane][3],       self.cell_bit[plane][2])
+        line_one   = "|  %03d %03d %03d  " % (self.cell_bit_plval[plane][6], self.cell_bit_plval[plane][7], self.cell_bit_plval[plane][0])
+        line_two   = "|   %d   %d   %d   " % (self.cell_bit[plane][6],       self.cell_bit[plane][7],       self.cell_bit[plane][0])
+        line_three = "|  %03d %d|%s %03d  " % (self.cell_bit_plval[plane][5], plane, one_layer_rot_list[plane], self.cell_bit_plval[plane][1])
+        line_four  = "|   %d  %03d  %d   " % (self.cell_bit[plane][5],       self.cell_data[plane],         self.cell_bit[plane][1])
+        line_five  = "|  %03d %03d %03d  " % (self.cell_bit_plval[plane][4], self.cell_bit_plval[plane][3], self.cell_bit_plval[plane][2])
+        line_six   = "|   %d   %d   %d   " % (self.cell_bit[plane][4],       self.cell_bit[plane][3],       self.cell_bit[plane][2])
         return [line_one, line_two, line_three, line_four, line_five, line_six]
 
     # Show: 프로그램을 실행했을 때 명령어 하나하나마다의 큐브의 상태를 보여줍니다.    ===== Show 함수 =====
     def Show(self):
-        print("Sum of Bit Cell: ", end = '')                                    # Bit Cell의 값 표시
-        for i in range(6):
-            print("Face %s %d, " % (one_layer_rot_list[i], self.Bin2Dec(i)), end = '')
-        print("Core Cell: %d" % self.cell_core, end = '')                       # Core Cell의 값 표시
-        print()                                                                 # 줄바꿈
-        print(" " *17 + "-" *15)
-        print(" " *16 + self.ShowPlane(0)[0] + "|")
-        print(" " *16 + self.ShowPlane(0)[1] + "|")
-        print(" " *16 + self.ShowPlane(0)[2] + "| Plane UP(0):")
-        print(" " *16 + self.ShowPlane(0)[3] + "| " + self.cell_func[0] + "Plane")
-        print(" " *16 + self.ShowPlane(0)[4] + "|")
-        print(" " *16 + self.ShowPlane(0)[5] + "|")
+        print(" " *17 + "-" *15 + "  Core Cell = %d" % self.cell_core)          # Core Cell 값 표시
+        for i in range(6):                                                      # 윗면의 데이터 + 각 면 Bit Cell의 합 + 기능 표시
+            print(" " *16 + self.ShowPlane(0)[i] + "| " + one_layer_rot_list[i] + " Plane(" + str(i) + "): Sum = " + "%03d" % self.Bin2Dec(i) + ", Func = " + self.cell_func[i])
         print(" " + "-" *15 + " " + "-" *15 + " " + "-" *15 + " " + "-" *15)
-        print(self.ShowPlane(3)[0] + self.ShowPlane(1)[0] + self.ShowPlane(2)[0] + self.ShowPlane(4)[0] + "|")
-        print(self.ShowPlane(3)[1] + self.ShowPlane(1)[1] + self.ShowPlane(2)[1] + self.ShowPlane(4)[1] + "| FRONT(1): " + self.cell_func[1])
-        print(self.ShowPlane(3)[2] + self.ShowPlane(1)[2] + self.ShowPlane(2)[2] + self.ShowPlane(4)[2] + "| RIGHT(2): " + self.cell_func[2])
-        print(self.ShowPlane(3)[3] + self.ShowPlane(1)[3] + self.ShowPlane(2)[3] + self.ShowPlane(4)[3] + "| LEFT (3): " + self.cell_func[3])
-        print(self.ShowPlane(3)[4] + self.ShowPlane(1)[4] + self.ShowPlane(2)[4] + self.ShowPlane(4)[4] + "| BACK (4): " + self.cell_func[4])
-        print(self.ShowPlane(3)[5] + self.ShowPlane(1)[5] + self.ShowPlane(2)[5] + self.ShowPlane(4)[5] + "|")
+        for i in range(6):                                                      # 앞, 뒤, 좌, 우의 데이터 표시
+            print(self.ShowPlane(3)[i] + self.ShowPlane(1)[i] + self.ShowPlane(2)[i] + self.ShowPlane(4)[i] + "|")
         print(" " + "-" *15 + " " + "-" *15 + " " + "-" *15 + " " + "-" *15)
-        print(" " *16 + self.ShowPlane(5)[0] + "|")
-        print(" " *16 + self.ShowPlane(5)[1] + "|")
-        print(" " *16 + self.ShowPlane(5)[2] + "| Plane DOWN(5):")
-        print(" " *16 + self.ShowPlane(5)[3] + "| " + self.cell_func[5] + "Plane")
-        print(" " *16 + self.ShowPlane(5)[4] + "|")
-        print(" " *16 + self.ShowPlane(5)[5] + "|")
+        for i in range(6):                                                      # 밑면의 데이터 표시
+            print(" " *16 + self.ShowPlane(5)[i] + "|")
         print(" " *17 + "-" *15)
         print()
-
-    # Printing Form
-    # [                 ---------------]
-    # [                |  plv plv plv  |]                                       # plv: 자릿값
-    # [                |  bit bit bit  |]                                       # bit: 비트 값
-    # [                |  plv pln plv  |  Plane UP(0):]                         # pln: Plane 번호 + Plane 방향
-    # [                |  bit dta bit  |  Input Plane]                          # dta: 데이터 값
-    # [                |  plv plv plv  |]
-    # [                |  bit bit bit  |]
-    # [ --------------- --------------- --------------- ---------------]
-    # [|  plv plv plv  |  plv plv plv  |  plv plv plv  |  plv plv plv  |]
-    # [|  bit bit bit  |  bit bit bit  |  bit bit bit  |  bit bit bit  | FRONT(1): Static One]
-    # [|  plv pln plv  |  plv pln plv  |  plv pln plv  |  plv pln plv  | RIGHT(2): AND]
-    # [|  bit dta bit  |  bit dta bit  |  bit dta bit  |  bit dta bit  | LEFT (3): OR]
-    # [|  plv plv plv  |  plv plv plv  |  plv plv plv  |  plv plv plv  | BACK (4): NOT]
-    # [|  bit bit bit  |  bit bit bit  |  bit bit bit  |  bit bit bit  |]
-    # [ --------------- --------------- --------------- ---------------]
-    # [                |  plv plv plv  |]
-    # [                |  bit bit bit  |]
-    # [                |  plv pln plv  |  Plane DOWN(5):]
-    # [                |  bit dta bit  |  Output Plane]
-    # [                |  plv plv plv  |]
-    # [                |  bit bit bit  |]
-    # [                 ---------------]
 
 
 class Cubes:
@@ -615,6 +575,6 @@ class Cubes:
             script_index += 1
 
             if self.c_cube:
-                self.cube.Show() #보여주는 거 작성하는 함수는 아직
+                self.cube.Show()
 
         return result

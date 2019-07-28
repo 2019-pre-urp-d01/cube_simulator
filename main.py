@@ -71,4 +71,4 @@ if __name__ == "__main__":
     logging.info("*"*50)
     logging.info("%30s"%"Result")
     logging.warning("*"*50)
-    print(c.execute(str_input))
+    print(c.Execute(str_input))

@@ -165,8 +165,8 @@ class Cube:
             self.cell_bit[plane][0] = temp_corner
 
         else: # direction == 1                                                  # direction이 1일 때: 반시계 방향으로 회전
-            temp_corner = self.cell_bit[p][0]                                   # temp_corner: 자리 바꿀 때 임시 저장 (코너 조각)
-            temp_edge   = self.cell_bit[p][1]                                   # temp_edge: 자리 바꿀 때 임시 저장 (엣지 조각)
+            temp_corner = self.cell_bit[plane][0]                                   # temp_corner: 자리 바꿀 때 임시 저장 (코너 조각)
+            temp_edge   = self.cell_bit[plane][1]                                   # temp_edge: 자리 바꿀 때 임시 저장 (엣지 조각)
             for bit in [0, 1, 2, 3, 4, 5]:
                 self.cell_bit[plane][bit] = self.cell_bit[plane][bit + 2]
             self.cell_bit[plane][7] = temp_edge
@@ -396,7 +396,7 @@ class Cube:
     def ShowPlane(self, plane):                                                 # plane: 표시할 Plane 번호
         line_one   = "|  %3d %3d %3d  " % (self.cell_bit_plval[plane][6], self.cell_bit_plval[plane][7], self.cell_bit_plval[plane][0])
         line_two   = "|  %3d %3d %3d  " % (self.cell_bit[plane][6],       self.cell_bit[plane][7],       self.cell_bit[plane][0])
-        line_three = "|  %3d %d %s %3d  " % (self.cell_bit_plval[plane][5], plane, self.one_layer_rot_list[plane], self.cell_bit_plval[plane][1])
+        line_three = "|  %3d %d %s %3d  " % (self.cell_bit_plval[plane][5], plane, one_layer_rot_list[plane], self.cell_bit_plval[plane][1])
         line_four  = "|  %3d %3d %3d  " % (self.cell_bit[plane][5],       self.cell_data[plane],         self.cell_bit[plane][1])
         line_five  = "|  %3d %3d %3d  " % (self.cell_bit_plval[plane][4], self.cell_bit_plval[plane][3], self.cell_bit_plval[plane][2])
         line_six   = "|  %3d %3d %3d  " % (self.cell_bit[plane][4],       self.cell_bit[plane][3],       self.cell_bit[plane][2])
@@ -406,7 +406,7 @@ class Cube:
     def Show(self):
         print("Sum of Bit Cell: ", end = '')                                    # Bit Cell의 값 표시
         for i in range(6):
-            print("Face %s %d, " % (one_layer_rot_list[i], self.Bit2Dec(i)), end = '')
+            print("Face %s %d, " % (one_layer_rot_list[i], self.Bin2Dec(i)), end = '')
         print("Core Cell: %d" % self.cell_core, end = '')                       # Core Cell의 값 표시
         print()                                                                 # 줄바꿈
         print(" " *17 + "-" *15)

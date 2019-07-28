@@ -35,17 +35,17 @@ def LoadCfg(file_loc = "setting.config"):
 
         if parsing_mode == 2:                                                   # Place Value 섹션
             if   line.split('=')[0] == "0":                                     # 0번 Plane
-                for i in range(8): cell_bit_place_value[0][i] = line.split('=')[1].split(',')[i]
+                for i in range(8): cell_bit_place_value[0][i] = int(line.split('=')[1].split(',')[i])
             elif line.split('=')[0] == "1":                                     # 1번 Plane
-                for i in range(8): cell_bit_place_value[1][i] = line.split('=')[1].split(',')[i]
+                for i in range(8): cell_bit_place_value[1][i] = int(line.split('=')[1].split(',')[i])
             elif line.split('=')[0] == "2":                                     # 2번 Plane
-                for i in range(8): cell_bit_place_value[2][i] = line.split('=')[1].split(',')[i]
+                for i in range(8): cell_bit_place_value[2][i] = int(line.split('=')[1].split(',')[i])
             elif line.split('=')[0] == "3":                                     # 3번 Plane
-                for i in range(8): cell_bit_place_value[3][i] = line.split('=')[1].split(',')[i]
+                for i in range(8): cell_bit_place_value[3][i] = int(line.split('=')[1].split(',')[i])
             elif line.split('=')[0] == "4":                                     # 4번 Plane
-                for i in range(8): cell_bit_place_value[4][i] = line.split('=')[1].split(',')[i]
+                for i in range(8): cell_bit_place_value[4][i] = int(line.split('=')[1].split(',')[i])
             elif line.split('=')[0] == "5":                                     # 5번 Plane
-                for i in range(8): cell_bit_place_value[5][i] = line.split('=')[1].split(',')[i]
+                for i in range(8): cell_bit_place_value[5][i] = int(line.split('=')[1].split(',')[i])
             else:                                                               # 그 외의 경우
                 logging.error("Plane Number can only be 0, 1, 2, 3, 4, or 5.")  # 오류 처리 (Logging)
                 return None                                                     # 반환값 없음

@@ -21,7 +21,6 @@ rotate_list = one_layer_rot_list + two_layers_rot_list + center_layer_rot_list  
 index_list = ["0", "1", "2", "3", "4", "5", "6"]                                # 6: 모든 면
 
 
-
 class Cube:
 
     # Cube initialization: Cube의 initial state를 설정합니다. =========================================================================
@@ -38,7 +37,7 @@ class Cube:
 
     # Sub Function: Input, Output, Load, Save, Clear, Execute, Rotate를 수행하는 데 사용하는 function입니다. ================================
 
-    # Bin2Dec: Bit Cell의 Binary를 Data Cell에 저장할 Demical로 바꿉니다.       ===== BIn2Dec 함수 =====
+    # Bin2Dec: Bit Cell의 Binary를 Data Cell에 저장할 Demical로 바꿉니다.       ===== Bin2Dec 함수 =====
     def Bin2Dec(self, planenum):                                                # planenum: 연산을 수행할 plane의 번호
         dec = 0                                                                 # demical을 저장하여 return할 variable
         for i in range(8):                                                      # 8개의 Bit Cell에 대하여 반복 수행
@@ -50,38 +49,38 @@ class Cube:
         raw_bin = [0, 0, 0, 0, 0, 0, 0, 0]                                      # raw_bin: 순서대로 이진수를 저장할 list
         for i in range(8):                                                      # 8개의 Bit Cell에 대하여 반복 수행
             raw_bin[i] = self.cell_data[planenum] >> i & 1                      # raw_bin list의 i번째 원소에 값 저장
-        bin = self.Raw2Plval(planenum, raw_bin)                                 # 사전 설정한 자릿값 순서에 맞게 Bit 값 순서 변경
-        return bin                                                              # bin list 반환
+        binary = self.Raw2Plval(planenum, raw_bin)                                 # 사전 설정한 자릿값 순서에 맞게 Bit 값 순서 변경
+        return binary                                                              # binary list 반환
 
     # Raw2Plval: 2진수 list의 Bit 값이 자릿값 순서대로 정렬되어 있는 것을 설정된 대로 바꿉니다. ===== Raw2Plval 함수 =====
     def Raw2Plval(self, planenum, raw_bin):                                     # planenum: 자릿값 순서를 찾을 면, raw_bin: 순서를 바꿀 Bit 값 list
-        bin = [0, 0, 0, 0, 0, 0, 0, 0]                                          # bin: 정렬된 2진수 list
+        binary = [0, 0, 0, 0, 0, 0, 0, 0]                                          # binary: 정렬된 2진수 list
 
         for ind, plval in enumerate(self.cell_bit_plval[planenum]):             # ind: 인덱스, plval: 자릿값
-            if   plval == 1:   bin[ind] = raw_bin[0]                            # 자릿값이   1일 때
-            elif plval == 2:   bin[ind] = raw_bin[1]                            # 자릿값이   2일 때
-            elif plval == 4:   bin[ind] = raw_bin[2]                            # 자릿값이   4일 때
-            elif plval == 8:   bin[ind] = raw_bin[3]                            # 자릿값이   8일 떄
-            elif plval == 16:  bin[ind] = raw_bin[4]                            # 자릿값이  16일 때
-            elif plval == 32:  bin[ind] = raw_bin[5]                            # 자릿값이  32일 때
-            elif plval == 64:  bin[ind] = raw_bin[6]                            # 자릿값이  64일 때
-            elif plval == 128: bin[ind] = raw_bin[7]                            # 자릿값이 128일 때
+            if   plval == 1:   binary[ind] = raw_bin[0]                            # 자릿값이   1일 때
+            elif plval == 2:   binary[ind] = raw_bin[1]                            # 자릿값이   2일 때
+            elif plval == 4:   binary[ind] = raw_bin[2]                            # 자릿값이   4일 때
+            elif plval == 8:   binary[ind] = raw_bin[3]                            # 자릿값이   8일 떄
+            elif plval == 16:  binary[ind] = raw_bin[4]                            # 자릿값이  16일 때
+            elif plval == 32:  binary[ind] = raw_bin[5]                            # 자릿값이  32일 때
+            elif plval == 64:  binary[ind] = raw_bin[6]                            # 자릿값이  64일 때
+            elif plval == 128: binary[ind] = raw_bin[7]                            # 자릿값이 128일 때
 
-        return bin                                                              # bin list 반환
+        return binary                                                              # binary list 반환
 
     # Plval2Raw: 2진수 list의 Bit 값이 설정된 대로 있는 것을 자릿값 순서대로 정렬합니다. ===== Plval2Raw 함수 =====
-    def Plval2Raw(self, planenum, bin):                                         # planenum: 자릿값 순서를 찾을 면, bin: 순서를 바꿀 Bit 값 list
+    def Plval2Raw(self, planenum, binary):                                         # planenum: 자릿값 순서를 찾을 면, binary: 순서를 바꿀 Bit 값 list
         raw_bin = [0, 0, 0, 0, 0, 0, 0, 0]                                      # raw_bin: 정렬된 2진수 list
 
         for ind, plval in enumerate(self.cell_bit_plval[planenum]):             # ind: 인덱스, plval: 자릿값
-            if   plval == 1:   raw_bin[0] = bin[ind]                            # 자릿값이   1일 때
-            elif plval == 2:   raw_bin[1] = bin[ind]                            # 자릿값이   2일 때
-            elif plval == 4:   raw_bin[2] = bin[ind]                            # 자릿값이   4일 때
-            elif plval == 8:   raw_bin[3] = bin[ind]                            # 자릿값이   8일 때
-            elif plval == 16:  raw_bin[4] = bin[ind]                            # 자릿값이  16일 때
-            elif plval == 32:  raw_bin[5] = bin[ind]                            # 자릿값이  32일 때
-            elif plval == 64:  raw_bin[6] = bin[ind]                            # 자릿값이  64일 때
-            elif plval == 128: raw_bin[7] = bin[ind]                            # 자릿값이 128일 때
+            if   plval == 1:   raw_bin[0] = binary[ind]                            # 자릿값이   1일 때
+            elif plval == 2:   raw_bin[1] = binary[ind]                            # 자릿값이   2일 때
+            elif plval == 4:   raw_bin[2] = binary[ind]                            # 자릿값이   4일 때
+            elif plval == 8:   raw_bin[3] = binary[ind]                            # 자릿값이   8일 때
+            elif plval == 16:  raw_bin[4] = binary[ind]                            # 자릿값이  16일 때
+            elif plval == 32:  raw_bin[5] = binary[ind]                            # 자릿값이  32일 때
+            elif plval == 64:  raw_bin[6] = binary[ind]                            # 자릿값이  64일 때
+            elif plval == 128: raw_bin[7] = binary[ind]                            # 자릿값이 128일 때
 
         return raw_bin                                                          # raw_bin list 반환
 
@@ -146,13 +145,13 @@ class Cube:
 
     # Shift: 입력한 plane의 모든 Bit Cell의 값을 한 번 Shift합니다.                ===== Shift 함수 =====
     def Shift(self, planenum):                                                  # planenum: Shift를 수행할 plane 번호
-        bin = self.cell_bit[planenum]                                           # bin: 해당 plane의 Bit Cell의 Bit 값을 저장한 list
-        raw_bin = Plval2Raw(planenum, bin)                                      # bin의 Bit 값을 자릿값 순서대로 정렬
+        binary = self.cell_bit[planenum]                                           # binary: 해당 plane의 Bit Cell의 Bit 값을 저장한 list
+        raw_bin = Plval2Raw(planenum, binary)                                      # binary의 Bit 값을 자릿값 순서대로 정렬
         for i in range(7):                                                      # 0부터 6까지 7번 반복
             self.raw_bin[7-i] = self.raw_bin[6-i]                               # i번쨰 값을 i+1로 이동
         self.raw_bin[0] = 0                                                     # 첫 번째 값을 0으로 설정
-        bin = Raw2Plval(planenum, raw_bin)                                      # raw_bin의 Bit 값을 해당 면의 자릿값 순서대로 정렬
-        self.cell_bit[planenum] = bin                                           # 해당 plane의 Bit Cell의 Bit 값에 shift한 Bit 값 저장
+        binary = Raw2Plval(planenum, raw_bin)                                      # raw_bin의 Bit 값을 해당 면의 자릿값 순서대로 정렬
+        self.cell_bit[planenum] = binary                                           # 해당 plane의 Bit Cell의 Bit 값에 shift한 Bit 값 저장
 
     # RotPlane: 입력한 Plane을 회전시킵니다.                                      ===== RotPlane 함수 =====
     def RotPlane(self, plane, direction):                                       # plane: 회전할 면, direction: 시계/반시계 방향
@@ -278,20 +277,18 @@ class Cube:
     def Load(self, plane = -1):
         if plane == -1:                                                         # 대상 Plane 번호가 -1일 때:
             for planenum in range(6):                                           #   모든 면에 대해 Load 실행
-                raw_bin = self.Dec2Bin(planenum)                                #   planenum 번째 Plane의 Bit Cell
-                bin = self.Raw2Plval(planenum, raw_bin)                         #   Bit Cell의 값을 자릿값 설정에 맞게 순서 바꾸기
+                binary = self.Dec2Bin(planenum)                                    #   planenum 번째 Plane의 Bit Cell
                 for bitnum in range(8):                                         #   planenum 번째 Plane의 bitnum 번째 Bit Cell에
-                    self.cell_bit[planenum][bitnum] = bin[bitnum]               #   bitnum 번째 인덱스의 bin의 값 대입
+                    self.cell_bit[planenum][bitnum] = binary[bitnum]               #   bitnum 번째 인덱스의 binary의 값 대입
 
         elif (plane > 5) | (plane < -1):                                        # 대상 Plane 번호가 범위 밖일 때:
             logging.error("Plane Number Should be -1, 0, 1, ..., or 5")         #   error 처리 (logging)
             return None                                                         #   Load 함수 종료
 
         else:                                                                   # 대상 Plane 번호가 0-5일 때:
-            raw_bin = self.Dec2Bin(plane)                                       #   plane 번째 Plane의 Bit Cell
-            bin_ = self.Raw2Plval(plane, raw_bin)                                #   Bit Cell의 값을 자릿값 설정에 맞게 순서 바꾸기
+            binary = self.Dec2Bin(plane)                                           #   plane 번째 Plane의 Bit Cell
             for bitnum in range(8):                                             #   plane 번째 Plane의 bitnum 번째 Bit Cell에
-                self.cell_bit[plane][bitnum] = bin[bitnum]                      #   bitnum 번째 인덱스의 bin의 값 대입
+                self.cell_bit[plane][bitnum] = binary[bitnum]                      #   bitnum 번째 인덱스의 binary의 값 대입
 
     # Save: Bit Cell의 값을 Data Cell에 저장합니다.                               ===== Save 함수 =====
     def Save(self, plane = -1):
@@ -528,7 +525,7 @@ class Cubes:
 
             elif s_word == "X": logging.info("%s: Execute"%s_word); self.cube.Execute()  #execute
 
-            elif s_word == "*": logging.info("%s: Load"%s_word); self.cube.Load(); #load
+            elif s_word == "*": logging.info("%s: Load"%s_word); self.cube.Load() #load
 
             elif s_word == "=": logging.info("%s: Save"%s_word); self.cube.Save() #save
 

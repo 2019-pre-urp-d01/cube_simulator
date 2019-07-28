@@ -88,7 +88,8 @@ class Cube:
     def FindPlane(self, planefunc):                                             # planefunc: 찾을 plane의 function
         planenum = list()                                                       # planenum: 결과를 찾아 저장할 list
         for ind, func in enumerate(self.cell_func):                             # ind: 인덱스, func: 역할
-            planenum.append(ind) if func == planefunc else pass                 # func와 planefunc가 같으면 ind를 planenum에 추가
+            if func == planefunc:
+                planenum.append(ind)                                            # func와 planefunc가 같으면 ind를 planenum에 추가
         return planenum                                                         # planenum list 반환
 
     # And: Data Cell과 Bit Cell 사이에 AND 연산을 수행합니다.                     ===== And 함수 =====
@@ -319,7 +320,7 @@ class Cube:
         else:                                                                   # 대상 Plane 번호가 0-5일 때:
             self.cell_data[plane] = 0                                           #   Data Cell 초기화
             self.cell_bit[plane] = [0] *8                                       #   Bit Cell 초기화
-            if self.cell_func[plane] = "One":                                   # 대상 Plane이 Static One Cell일 때:
+            if self.cell_func[plane] == "One":                                  # 대상 Plane이 Static One Cell일 때:
                 self.cell_data[plane] = 1                                       #   Data Cell을 1로 초기화
 
     # Execute: 비트 연산과 Shift 연산을 수행합니다.                                ===== Execute 험수 =====

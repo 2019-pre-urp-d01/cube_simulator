@@ -467,6 +467,7 @@ class Cubes:
         self.c_debug = c_debug
         self.c_ascii = c_ascii
         self.c_step = c_step
+        self.c_cube = c_cube
 
         cell_function, cell_bit_place_value = LoadCfg()                         # 사전 설정값 받아오기
         self.cube = Cube(cell_function, cell_bit_place_value)                   # 큐브 생성하기
@@ -490,7 +491,7 @@ class Cubes:
     def Execute(self, script = ""):
         script_index = 0 #매길 인덱스들
         result = ""
-        if script.count("(") == script.count(")"):
+        if script.count(")") != 0 and script.count("(") == script.count(")"):
             if script.count(")") == 0:
                 logging.warning("Can't find ')', please write it.")
                 raise CoreCellCmdError_NO
@@ -523,13 +524,13 @@ class Cubes:
                 if self.c_ascii: result += chr(self.cube.Output())
                 else: result += "%3d "%self.cube.output()
 
-            elif s_word == "X": logging.info("%s: Execute"%s); self.cube.Execute()  #execute
+            elif s_word == "X": logging.info("%s: Execute"%s_word); self.cube.Execute()  #execute
 
-            elif s_word == "*": logging.info("%s: Load"%s); self.cube.Load() #load
+            elif s_word == "*": logging.info("%s: Load"%s_word); self.cube.Load() #load
 
-            elif s_word == "=": logging.info("%s: Save"%s); self.cube.Save() #save
+            elif s_word == "=": logging.info("%s: Save"%s_word); self.cube.Save() #save
 
-            elif s_word == "C": logging.info("%s: Clear"%s); self.cube.Clear() #clear
+            elif s_word == "C": logging.info("%s: Clear"%s_word); self.cube.Clear() #clear
 
             elif s == "(":
                 if self.cube.cell_core != 0:

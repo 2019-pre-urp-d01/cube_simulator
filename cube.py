@@ -289,7 +289,7 @@ class Cube:
 
         else:                                                                   # 대상 Plane 번호가 0-5일 때:
             raw_bin = self.Dec2Bin(plane)                                       #   plane 번째 Plane의 Bit Cell
-            bin = self.Raw2Plval(plane, raw_bin)                                #   Bit Cell의 값을 자릿값 설정에 맞게 순서 바꾸기
+            bin_ = self.Raw2Plval(plane, raw_bin)                                #   Bit Cell의 값을 자릿값 설정에 맞게 순서 바꾸기
             for bitnum in range(8):                                             #   plane 번째 Plane의 bitnum 번째 Bit Cell에
                 self.cell_bit[plane][bitnum] = bin[bitnum]                      #   bitnum 번째 인덱스의 bin의 값 대입
 
@@ -502,7 +502,6 @@ class Cubes:
         #스크립트의 한글자 한글자씩 분석을 할 거기 때문에 인덱스로 할당함
 
         while script_index < len(script):
-            print('위로올라옴')
             s_word = script[script_index]
             if s_word in rotate_list:
                 if script_index+1 < len(script) and script[script_index+1] in ["'"]: #' 붙인 거 판별
@@ -525,7 +524,7 @@ class Cubes:
             elif s_word == 'P': #print
                 logging.info("%s : Output"%(s_word))
                 if self.c_ascii: result += chr(self.cube.Output())
-                else: result += "%3d "%self.cube.output()
+                else: result += "%3d "%self.cube.Output()
 
             elif s_word == "X": logging.info("%s: Execute"%s_word); self.cube.Execute()  #execute
 
@@ -535,7 +534,7 @@ class Cubes:
 
             elif s_word == "C": logging.info("%s: Clear"%s_word); self.cube.Clear() #clear
 
-            elif s == "(":
+            elif s_word == "(":
                 if self.cube.cell_core != 0:
                     logging.info("%s: If open, Core Cell is Not Zero:%d"%(s_word,self.cube.cell_core))
                     # par_stack.append(script_index+1)
@@ -552,7 +551,7 @@ class Cubes:
                         locate += 1
                     script_index = locate
 
-            elif s == ")":
+            elif s_word == ")":
                 if self.cube.cell_core != 0:
                     logging.info("%s: If close, Core Cell is Not Zero:%d"%(s_word,self.cube.cell_core))
                     locate = script_index-1
@@ -569,15 +568,15 @@ class Cubes:
                     logging.info("%s If close, Core Cell is Zero"%s_word)
                     # par_stack.append(script_index+1)
 
-            elif s == "!": logging.info("%s: Core <- Input"%s_word); self.cube.cell_core = self.cube.cell_data[0]
+            elif s_word == "!": logging.info("%s: Core <- Input"%s_word); self.cube.cell_core = self.cube.cell_data[0]
 
-            elif s == "-": logging.info("%s: Core -= Input"%s_word); self.cube.cell_core -= self.cube.cell_data[0]
+            elif s_word == "-": logging.info("%s: Core -= Input"%s_word); self.cube.cell_core -= self.cube.cell_data[0]
 
-            elif s == "+": logging.info("%s: Core += Input"%s_word); self.cube.cell_core += self.cube.cell_data[0]
+            elif s_word == "+": logging.info("%s: Core += Input"%s_word); self.cube.cell_core += self.cube.cell_data[0]
 
-            elif s == "m": logging.info("%s: Core - 1"%s_word); self.cube.cell_core -= 1 #나중에 여기 수정해야 한다!!
+            elif s_word == "m": logging.info("%s: Core - 1"%s_word); self.cube.cell_core -= 1 #나중에 여기 수정해야 한다!!
 
-            elif s == "p": logging.info("%s: Core + 1"%s_word); self.cube.cell_core += 1
+            elif s_word == "p": logging.info("%s: Core + 1"%s_word); self.cube.cell_core += 1
 
             elif s_word == "[":
                 if self.cube.hyper_in == None: new_cube = self.CreateCubeOnDirection(self.cube, "in")
@@ -598,7 +597,7 @@ class Cubes:
                 for i in range(6):
                     new_cube.cell_data[i] = self.cube.cell_data[i]
 
-            elif s == "}":
+            elif s_word == "}":
                 if self.cube.hyper_out == None: new_cube = self.CreateCubeOnDirection(self.cube, "out")
                 else: new_cube = self.cube.hyper_out
                 logging.info("%s: Send Data Outside From %s to %s"%(s_word,id(self.cube),id(new_cube)))
@@ -611,15 +610,10 @@ class Cubes:
                 logging.warning("please input right Character")
                 script_index += 1
                 continue
-            print(script_index)
 
             script_index += 1
-
-            print(script_index)
 
             if self.c_cube:
                 self.cube.Show() #보여주는 거 작성하는 함수는 아직
 
-        logging.info('\n\n')
         return result
-        pass

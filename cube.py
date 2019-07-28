@@ -277,18 +277,21 @@ class Cube:
     def Load(self, plane = -1):
         if plane == -1:                                                         # 대상 Plane 번호가 -1일 때:
             for planenum in range(6):                                           #   모든 면에 대해 Load 실행
-                binary = self.Dec2Bin(planenum)                                    #   planenum 번째 Plane의 Bit Cell
+                binary = self.Dec2Bin(planenum)                                 #   planenum 번째 Plane의 Bit Cell
+                print(binary)
                 for bitnum in range(8):                                         #   planenum 번째 Plane의 bitnum 번째 Bit Cell에
-                    self.cell_bit[planenum][bitnum] = binary[bitnum]               #   bitnum 번째 인덱스의 binary의 값 대입
+                    self.cell_bit[planenum][bitnum] = binary[bitnum]            #   bitnum 번째 인덱스의 binary의 값 대입
+                    print(binary[bitnum])
 
         elif (plane > 5) | (plane < -1):                                        # 대상 Plane 번호가 범위 밖일 때:
             logging.error("Plane Number Should be -1, 0, 1, ..., or 5")         #   error 처리 (logging)
             return None                                                         #   Load 함수 종료
 
         else:                                                                   # 대상 Plane 번호가 0-5일 때:
-            binary = self.Dec2Bin(plane)                                           #   plane 번째 Plane의 Bit Cell
+            binary = self.Dec2Bin(plane)                                        #   plane 번째 Plane의 Bit Cell
+
             for bitnum in range(8):                                             #   plane 번째 Plane의 bitnum 번째 Bit Cell에
-                self.cell_bit[plane][bitnum] = binary[bitnum]                      #   bitnum 번째 인덱스의 binary의 값 대입
+                self.cell_bit[plane][bitnum] = binary[bitnum]                   #   bitnum 번째 인덱스의 binary의 값 대입
 
     # Save: Bit Cell의 값을 Data Cell에 저장합니다.                               ===== Save 함수 =====
     def Save(self, plane = -1):

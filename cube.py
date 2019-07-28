@@ -41,7 +41,7 @@ class Cube:
     def Bin2Dec(self, planenum):                                                # planenum: 연산을 수행할 plane의 번호
         dec = 0                                                                 # demical을 저장하여 return할 variable
         for i in range(8):                                                      # 8개의 Bit Cell에 대하여 반복 수행
-            dec += self.cell_bit[planenum][i] * self.cell_bit_plval[planenum][i]# Bit 값과 자릿값을 곱한 값을 dec에 저장
+            dec += (self.cell_bit[planenum][i] * self.cell_bit_plval[planenum][i]) # Bit 값과 자릿값을 곱한 값을 dec에 저장
         return dec                                                              # dec 값 반환
 
     # Dec2Bin: Data Cell의 Demical을 Bit Cell에 저장할 Binary로 바꿉니다.         ===== Dec2Bin 함수 =====

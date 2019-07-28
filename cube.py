@@ -165,8 +165,8 @@ class Cube:
             self.cell_bit[plane][0] = temp_corner
 
         else: # direction == 1                                                  # direction이 1일 때: 반시계 방향으로 회전
-            temp_corner = self.cell_bit[plane][0]                                   # temp_corner: 자리 바꿀 때 임시 저장 (코너 조각)
-            temp_edge   = self.cell_bit[plane][1]                                   # temp_edge: 자리 바꿀 때 임시 저장 (엣지 조각)
+            temp_corner = self.cell_bit[plane][0]                               # temp_corner: 자리 바꿀 때 임시 저장 (코너 조각)
+            temp_edge   = self.cell_bit[plane][1]                               # temp_edge: 자리 바꿀 때 임시 저장 (엣지 조각)
             for bit in [0, 1, 2, 3, 4, 5]:
                 self.cell_bit[plane][bit] = self.cell_bit[plane][bit + 2]
             self.cell_bit[plane][7] = temp_edge

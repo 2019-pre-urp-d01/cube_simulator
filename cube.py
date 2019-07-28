@@ -286,8 +286,7 @@ class Cube:
 
         else:                                                                   # 대상 Plane 번호가 0-5일 때:
             binary = self.Dec2Bin(plane)                                        #   plane 번째 Plane의 Bit Cell
-            for bitnum in range(8):                                             #   plane 번째 Plane의 bitnum 번째 Bit Cell에
-                self.cell_bit[plane][bitnum] = binary[bitnum]                   #   bitnum 번째 인덱스의 binary의 값 대입
+            self.cell_bit[plane] = binary                                       #   plane 번째 Plane에 binary 대입
 
     # Save: Bit Cell의 값을 Data Cell에 저장합니다.                               ===== Save 함수 =====
     def Save(self, plane = -1):

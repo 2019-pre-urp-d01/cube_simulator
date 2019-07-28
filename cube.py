@@ -278,8 +278,7 @@ class Cube:
         if plane == -1:                                                         # 대상 Plane 번호가 -1일 때:
             for planenum in range(6):                                           #   모든 면에 대해 Load 실행
                 binary = self.Dec2Bin(planenum)                                 #   planenum 번째 Plane의 Bit Cell
-                for bitnum in range(8):                                         #   planenum 번째 Plane의 bitnum 번째 Bit Cell에
-                    self.cell_bit[planenum][bitnum] = binary[bitnum]            #   bitnum 번째 인덱스의 binary의 값 대입
+                self.cell_bit[planenum] = binary                                #   planenum 번째 Plane의 bitnum 번째 Bit Cell에 binary 대입
 
         elif (plane > 5) | (plane < -1):                                        # 대상 Plane 번호가 범위 밖일 때:
             logging.error("Plane Number Should be -1, 0, 1, ..., or 5")         #   error 처리 (logging)

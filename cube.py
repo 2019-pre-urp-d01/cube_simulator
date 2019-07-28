@@ -297,14 +297,14 @@ class Cube:
     def Save(self, plane = -1):
         if plane == -1:                                                         # 대상 Plane 번호가 -1일 때:
             for planenum in range(6):                                           #   모든 Plane에 대해 Save 실행
-                self.cell_data[planenum] = self.Bit2Dec(planenum)               #   planenum 번째 Plane에서 Save
+                self.cell_data[planenum] = self.Bin2Dec(planenum)               #   planenum 번째 Plane에서 Save
 
         elif (plane > 5) | (plane < -1):                                        # 대상 Plane 번호가 범위 밖일 때:
             logging.error("Plane Number Should be -1, 0, 1, ..., or 5")         #   error 처리 (logging)
             return None                                                         #   Save 함수 종료
 
         else:                                                                   # 대상 Plane 번호가 0-5일 때:
-            self.cell_data[plane] = self.Bit2Dec(plane)                         #   plane 번째 Plane에서 Save
+            self.cell_data[plane] = self.Bin2Dec(plane)                         #   plane 번째 Plane에서 Save
 
     # Clear: Plane의 Bit Cell과 Data Cell의 값을 초기 상태로 되돌립니다.           ===== Clear 함수 =====
     def Clear(self, plane = -1):
@@ -521,7 +521,7 @@ class Cubes:
                 inp = input()
                 logging.info("%s : Input"%s_word)
                 self.cube.Input(ord(inp[0])) #첫 번째 글자 추출 후 아스키 코드로 변환함(한 글자밖에 받을 수 없음)
-                
+
             elif s_word == 'P': #print
                 logging.info("%s : Output"%(s_word))
                 if self.c_ascii: result += chr(self.cube.Output())

@@ -1,4 +1,5 @@
 import logging
+import numpy as np
 from setup_file_io import LoadCfg
 
 # 0: up, 1: front, 2: right, 3: left, 4: back, 5: down
@@ -31,9 +32,10 @@ class Cube:
         self.cell_func      = cell_func                                         # list: 각 Plane의 역할
         self.cell_bit_plval = cell_bit_plval                                    # list: Bit Cell의 자릿값
 
-        self.cell_data =  [0]     *6                                            # list: Data Cell의 값
+        self.cell_data = np.zeros(6, dtype = "uint8")                           # list: Data Cell의 값
         self.cell_bit  = [[0] *8] *6                                            # list: Bit Cell의 값
         self.cell_core =   0                                                    # variable: Core Cell의 값
+        self.StaticOne()                                                        # Static One Cell의 값 1로 초기화
 
     # Sub Function: Input, Output, Load, Save, Clear, Execute, Rotate를 수행하는 데 사용하는 function입니다. ================================
 
@@ -169,6 +171,7 @@ class Cube:
             temp_edge   = self.cell_bit[plane][1]                               # temp_edge: 자리 바꿀 때 임시 저장 (엣지 조각)
             for bit in [0, 1, 2, 3, 4, 5]:
                 self.cell_bit[plane][bit] = self.cell_bit[plane][bit + 2]
+            self.cell_bit[plane][6] = temp_corner
             self.cell_bit[plane][7] = temp_edge
 
     # RotLine: 입력한 plane 주위의 layer를 회전시킵니다.                           ===== RotLine 함수 =====
@@ -293,6 +296,7 @@ class Cube:
         if plane == -1:                                                         # 대상 Plane 번호가 -1일 때:
             for planenum in range(6):                                           #   모든 Plane에 대해 Save 실행
                 self.cell_data[planenum] = self.Bin2Dec(planenum)               #   planenum 번째 Plane에서 Save
+            self.StaticOne()                                                    #   StaticOne Plane의 Data Cell 초기화
 
         elif (plane > 5) | (plane < -1):                                        # 대상 Plane 번호가 범위 밖일 때:
             logging.error("Plane Number Should be -1, 0, 1, ..., or 5")         #   error 처리 (logging)
@@ -300,6 +304,8 @@ class Cube:
 
         else:                                                                   # 대상 Plane 번호가 0-5일 때:
             self.cell_data[plane] = self.Bin2Dec(plane)                         #   plane 번째 Plane에서 Save
+            if self.cell_func[plane] == "One":                                  # 대상 Plane이 Static One Cell일 때:
+                self.cell_data[plane] = 1                                       #   Data Cell을 1로 초기화
 
     # Clear: Plane의 Bit Cell과 Data Cell의 값을 초기 상태로 되돌립니다.           ===== Clear 함수 =====
     def Clear(self, plane = -1):
@@ -316,7 +322,7 @@ class Cube:
         else:                                                                   # 대상 Plane 번호가 0-5일 때:
             self.cell_data[plane] = 0                                           #   Data Cell 초기화
             self.cell_bit[plane] = [0] *8                                       #   Bit Cell 초기화
-            if self.cell_func[plane] == "One":                                   # 대상 Plane이 Static One Cell일 때:
+            if self.cell_func[plane] == "One":                                  # 대상 Plane이 Static One Cell일 때:
                 self.cell_data[plane] = 1                                       #   Data Cell을 1로 초기화
 
     # Execute: 비트 연산과 Shift 연산을 수행합니다.                                ===== Execute 험수 =====

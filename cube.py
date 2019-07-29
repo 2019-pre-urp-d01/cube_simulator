@@ -33,8 +33,9 @@ class Cube:
         self.cell_bit_plval = cell_bit_plval                                    # list: Bit Cell의 자릿값
 
         self.cell_data = np.zeros(6, dtype = "uint8")                           # list: Data Cell의 값
-        self.cell_bit  = [[0] *8] *6                                            # list: Bit Cell의 값
+        self.cell_bit  = [[1, 3, 5, 2, 4, 6, 7, 0], [2, 5, 4, 0, 1, 7, 3, 6], [3, 7, 0, 1, 2, 5, 6, 4], [4, 1, 7, 6, 2, 3, 5, 0], [5, 0, 1, 4, 6, 3, 7, 2], [6, 5, 7, 2, 3, 4, 1, 0]]                                            # list: Bit Cell의 값
         # Rotate 디버깅 시 이 리스트를 cell_bit로 사용하세요: [[1, 3, 5, 2, 4, 6, 7, 0], [2, 5, 4, 0, 1, 7, 3, 6], [3, 7, 0, 1, 2, 5, 6, 4], [4, 1, 7, 6, 2, 3, 5, 0], [5, 0, 1, 4, 6, 3, 7, 2], [6, 5, 7, 2, 3, 4, 1, 0]]
+        # Rotate 디버깅 시 이 리스트를 cell_bit로 사용하세요: [[1, 1, 1, 0, 0, 0, 1, 0], [0, 1, 0, 0, 1, 1, 1, 0], [1, 1, 0, 1, 0, 1, 0, 0], [0, 1, 1, 0, 0, 1, 1, 0], [1, 0, 1, 0, 0, 1, 1, 0], [0, 1, 1, 0, 1, 0, 1, 0]]
         self.cell_core = 0                                                      # variable: Core Cell의 값
         self.StaticOne()                                                        # Static One Cell의 값 1로 초기화
 
@@ -89,9 +90,9 @@ class Cube:
 
     # FindPlane: 입력한 function을 가지고 있는 plane을 모두 찾아 list를 만듭니다.   ===== FindPlane 함수 =====
     def FindPlane(self, planefunc):                                             # planefunc: 찾을 plane의 function
-        planenum = list()                                                       # planenum: 결과를 찾아 저장할 list
+        planenum.lower() = list()                                                       # planenum: 결과를 찾아 저장할 list
         for ind, func in enumerate(self.cell_func):                             # ind: 인덱스, func: 역할
-            if func == planefunc:
+            if func == planefunc.lower():
                 planenum.append(ind)                                            # func와 planefunc가 같으면 ind를 planenum에 추가
         return planenum                                                         # planenum list 반환
 

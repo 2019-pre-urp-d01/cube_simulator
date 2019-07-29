@@ -419,7 +419,7 @@ class Cube:
 
 class Cubes:
 
-    def __init__(self, c_debug = 0, c_ascii = 0, c_cube = False, c_step = 0):
+    def __init__(self, c_debug = 0, c_ascii = True, c_cube = False, c_step = 0):
 
         self.cubes = list()                                                     # 큐브 리스트
 
@@ -446,7 +446,7 @@ class Cubes:
 
 
     # Exectue one command
-    def Execute(self, script = ""):
+    def Execute(self, script = "", input_value = ""):
         script_index = 0 #매길 인덱스들
         result = ""
         #스크립트의 한글자 한글자씩 분석을 할 거기 때문에 인덱스로 할당함
@@ -467,7 +467,10 @@ class Cubes:
 
             elif s_word == 'I': #input
                 print(">"*9+"INPUT"+">"*9, end="")
-                inp = input()
+                if input_value != "":
+                    inp = input_value[0]
+                else:
+                    inp = input()
                 logging.info("%s : Input"%s_word)
                 self.cube.Input(ord(inp[0])) #첫 번째 글자 추출 후 아스키 코드로 변환함(한 글자밖에 받을 수 없음)
 

@@ -4,12 +4,10 @@ from setup_file_io import LoadCfg
 
 # 0: up, 1: front, 2: right, 3: left, 4: back, 5: down
 
+cell_function, cell_bit_place_value = LoadCfg()                                 # 사전 설정값 받아오기
 # 각 Plane의 default function을 저장한 list입니다.
-DEF_FUNC = ["Inout", "Xor", "And", "Not", "Shift", "Or"]
-
 # 각 Bit Cell의 absolute position에 대응하는 default place value를 저장한 list입니다.
 # [[up], [front], [right], [left], [back], [down]]
-DEF_BIT_PLVAL = [[1, 2, 4, 8, 16, 32, 64, 128]] *6
 
 # 회전 기호를 모아 둔 list입니다.
 one_layer_rot_list =    ['U', 'F', 'R', 'L', 'B', 'D']                          # 한 줄 회전
@@ -25,7 +23,7 @@ index_list = ["0", "1", "2", "3", "4", "5", "6"]                                
 class Cube:
 
     # Cube initialization: Cube의 initial state를 설정합니다. =========================================================================
-    def __init__(self, cell_func=DEF_FUNC, cell_bit_plval=DEF_BIT_PLVAL):
+    def __init__(self, cell_func=cell_function, cell_bit_plval=cell_bit_place_value):
         self.hyper_in  = None                                                   #
         self.hyper_out = None                                                   #
 
@@ -33,9 +31,7 @@ class Cube:
         self.cell_bit_plval = cell_bit_plval                                    # list: Bit Cell의 자릿값
 
         self.cell_data = np.zeros(6, dtype = "uint8")                           # list: Data Cell의 값
-        self.cell_bit  = [[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0]]                                        # list: Bit Cell의 값
-        # Rotate 디버깅 시 이 리스트를 cell_bit로 사용하세요: [[1, 3, 5, 2, 4, 6, 7, 0], [2, 5, 4, 0, 1, 7, 3, 6], [3, 7, 0, 1, 2, 5, 6, 4], [4, 1, 7, 6, 2, 3, 5, 0], [5, 0, 1, 4, 6, 3, 7, 2], [6, 5, 7, 2, 3, 4, 1, 0]]
-        # Rotate 디버깅 시 이 리스트를 cell_bit로 사용하세요: [[1, 1, 1, 0, 0, 0, 1, 0], [0, 1, 0, 0, 1, 1, 1, 0], [1, 1, 0, 1, 0, 1, 0, 0], [0, 1, 1, 0, 0, 1, 1, 0], [1, 0, 1, 0, 0, 1, 1, 0], [0, 1, 1, 0, 1, 0, 1, 0]]
+        self.cell_bit  = [[0] *8] *6
         self.cell_core = 0                                                      # variable: Core Cell의 값
         self.StaticOne()                                                        # Static One Cell의 값 1로 초기화
 
@@ -152,10 +148,10 @@ class Cube:
         binary = self.cell_bit[planenum]                                        # binary: 해당 plane의 Bit Cell의 Bit 값을 저장한 list
         raw_bin = self.Plval2Raw(planenum, binary)                              # binary의 Bit 값을 자릿값 순서대로 정렬
         for i in range(7):                                                      # 0부터 6까지 7번 반복
-            raw_bin[7-i] = raw_bin[6-i]                               # i번쨰 값을 i+1로 이동
-        raw_bin[0] = 0                                                     # 첫 번째 값을 0으로 설정
-        binary = self.Raw2Plval(planenum, raw_bin)                                      # raw_bin의 Bit 값을 해당 면의 자릿값 순서대로 정렬
-        self.cell_bit[planenum] = binary                                           # 해당 plane의 Bit Cell의 Bit 값에 shift한 Bit 값 저장
+            raw_bin[7-i] = raw_bin[6-i]                                         # i번쨰 값을 i+1로 이동
+        raw_bin[0] = 0                                                          # 첫 번째 값을 0으로 설정
+        binary = self.Raw2Plval(planenum, raw_bin)                              # raw_bin의 Bit 값을 해당 면의 자릿값 순서대로 정렬
+        self.cell_bit[planenum] = binary                                        # 해당 plane의 Bit Cell의 Bit 값에 shift한 Bit 값 저장
 
     # RotPlane: 입력한 Plane을 회전시킵니다.                                      ===== RotPlane 함수 =====
     def RotPlane(self, plane, direction):                                       # plane: 회전할 면, direction: 시계/반시계 방향
@@ -251,8 +247,8 @@ class Cube:
                     self.cell_bit[planes[i]][bits[i][j]] = self.cell_bit[planes[i+1]][bits[i+1][j]]
                 self.cell_data[planes[i]] = self.cell_data[planes[i+1]]
                 self.cell_func[planes[i]] = self.cell_func[planes[i+1]]
-            self.cell_bit[planes[3]][bits[0][0]] = temp_edge1
-            self.cell_bit[planes[3]][bits[0][1]] = temp_edge2
+            self.cell_bit[planes[3]][bits[3][0]] = temp_edge1
+            self.cell_bit[planes[3]][bits[3][1]] = temp_edge2
             self.cell_data[planes[3]]            = temp_data
             self.cell_func[planes[3]]            = temp_func
 
@@ -399,11 +395,11 @@ class Cube:
     # ShowPlane: 입력한 Plane의 Bit Cell의 비트 값과 자릿값, Data Cell의 값을 보여줍니다. ===== ShowPlane 함수 =====
     def ShowPlane(self, plane):                                                 # plane: 표시할 Plane 번호
         line_one   = "|  %03d %03d %03d  " % (self.cell_bit_plval[plane][6], self.cell_bit_plval[plane][7], self.cell_bit_plval[plane][0])
-        line_two   = "|   %d   %d   %d   " % (self.cell_bit[plane][6],       self.cell_bit[plane][7],       self.cell_bit[plane][0])
+        line_two   = "|  %2d  %2d  %2d   " % (self.cell_bit[plane][6],       self.cell_bit[plane][7],       self.cell_bit[plane][0])
         line_three = "|  %03d %d|%s %03d  " % (self.cell_bit_plval[plane][5], plane, one_layer_rot_list[plane], self.cell_bit_plval[plane][1])
-        line_four  = "|   %d  %03d  %d   " % (self.cell_bit[plane][5],       self.cell_data[plane],         self.cell_bit[plane][1])
+        line_four  = "|  %2d  %03d %2d   " % (self.cell_bit[plane][5],       self.cell_data[plane],         self.cell_bit[plane][1])
         line_five  = "|  %03d %03d %03d  " % (self.cell_bit_plval[plane][4], self.cell_bit_plval[plane][3], self.cell_bit_plval[plane][2])
-        line_six   = "|   %d   %d   %d   " % (self.cell_bit[plane][4],       self.cell_bit[plane][3],       self.cell_bit[plane][2])
+        line_six   = "|  %2d  %2d  %2d   " % (self.cell_bit[plane][4],       self.cell_bit[plane][3],       self.cell_bit[plane][2])
         return [line_one, line_two, line_three, line_four, line_five, line_six]
 
     # Show: 프로그램을 실행했을 때 명령어 하나하나마다의 큐브의 상태를 보여줍니다.    ===== Show 함수 =====
@@ -432,8 +428,7 @@ class Cubes:
         self.c_step = c_step
         self.c_cube = c_cube
 
-        cell_function, cell_bit_place_value = LoadCfg()                         # 사전 설정값 받아오기
-        self.cube = Cube(cell_function, cell_bit_place_value)                   # 큐브 생성하기
+        self.cube = Cube()                                                      # 큐브 생성하기
         self.cubes.append(self.cube)
 
 

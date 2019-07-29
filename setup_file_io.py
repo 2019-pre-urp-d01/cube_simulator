@@ -4,7 +4,7 @@ def LoadCfg(file_loc = "setting.config"):
     setup_file = open(file_loc, 'r')
 
     parsing_mode = 0
-    cell_function = ["Input", "One", "Not", "Or", "And", "Output"]              # Plane 역할
+    cell_function = ["Input", "One", "Or", "And", "And", "Output"]              # Plane 역할
     cell_bit_place_value = [[1, 2, 4, 8, 16, 32, 64, 128]] *6                   # Bit Cell 기본 자릿값
 
     while True:                                                                 # break 전까지 계속 반복

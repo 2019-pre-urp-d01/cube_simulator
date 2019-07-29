@@ -90,7 +90,7 @@ class Cube:
 
     # FindPlane: 입력한 function을 가지고 있는 plane을 모두 찾아 list를 만듭니다.   ===== FindPlane 함수 =====
     def FindPlane(self, planefunc):                                             # planefunc: 찾을 plane의 function
-        planenum.lower() = list()                                                       # planenum: 결과를 찾아 저장할 list
+        planenum = list()                                                       # planenum: 결과를 찾아 저장할 list
         for ind, func in enumerate(self.cell_func):                             # ind: 인덱스, func: 역할
             if func == planefunc.lower():
                 planenum.append(ind)                                            # func와 planefunc가 같으면 ind를 planenum에 추가
@@ -149,11 +149,11 @@ class Cube:
 
     # Shift: 입력한 plane의 모든 Bit Cell의 값을 한 번 Shift합니다.                ===== Shift 함수 =====
     def Shift(self, planenum):                                                  # planenum: Shift를 수행할 plane 번호
-        binary = self.cell_bit[planenum]                                           # binary: 해당 plane의 Bit Cell의 Bit 값을 저장한 list
-        raw_bin = self.Plval2Raw(planenum, binary)                                      # binary의 Bit 값을 자릿값 순서대로 정렬
+        binary = self.cell_bit[planenum]                                        # binary: 해당 plane의 Bit Cell의 Bit 값을 저장한 list
+        raw_bin = self.Plval2Raw(planenum, binary)                              # binary의 Bit 값을 자릿값 순서대로 정렬
         for i in range(7):                                                      # 0부터 6까지 7번 반복
-            self.raw_bin[7-i] = self.raw_bin[6-i]                               # i번쨰 값을 i+1로 이동
-        self.raw_bin[0] = 0                                                     # 첫 번째 값을 0으로 설정
+            raw_bin[7-i] = raw_bin[6-i]                               # i번쨰 값을 i+1로 이동
+        raw_bin[0] = 0                                                     # 첫 번째 값을 0으로 설정
         binary = Raw2Plval(planenum, raw_bin)                                      # raw_bin의 Bit 값을 해당 면의 자릿값 순서대로 정렬
         self.cell_bit[planenum] = binary                                           # 해당 plane의 Bit Cell의 Bit 값에 shift한 Bit 값 저장
 

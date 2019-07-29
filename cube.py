@@ -154,7 +154,7 @@ class Cube:
         for i in range(7):                                                      # 0부터 6까지 7번 반복
             raw_bin[7-i] = raw_bin[6-i]                               # i번쨰 값을 i+1로 이동
         raw_bin[0] = 0                                                     # 첫 번째 값을 0으로 설정
-        binary = Raw2Plval(planenum, raw_bin)                                      # raw_bin의 Bit 값을 해당 면의 자릿값 순서대로 정렬
+        binary = self.Raw2Plval(planenum, raw_bin)                                      # raw_bin의 Bit 값을 해당 면의 자릿값 순서대로 정렬
         self.cell_bit[planenum] = binary                                           # 해당 plane의 Bit Cell의 Bit 값에 shift한 Bit 값 저장
 
     # RotPlane: 입력한 Plane을 회전시킵니다.                                      ===== RotPlane 함수 =====
@@ -260,7 +260,7 @@ class Cube:
 
     # Input: Input Plane에서 값을 받아옵니다.                                     ===== Input 함수 =====
     def Input(self, input_value):                                               # input_value: 입력받은 값
-        planenum = self.FindPlane("Input")                                      # planenum: 모든 Input Cell의 번호를 담은 list
+        planenum = self.FindPlane("Input") + self.FindPlane("Inout")            # planenum: 모든 Input Cell의 번호를 담은 list
         if len(planenum) == 0:                                                  # Input Plane이 없을 때:
             logging.error("Couldn't find Input Plane")                          #   error 처리 (logging)
             return None                                                         #   Input 함수 종료
@@ -269,7 +269,7 @@ class Cube:
 
     # Output: Output Plane의 값을 출력합니다.                                     ===== Output 함수 =====
     def Output(self):
-        planenum = self.FindPlane("Output")                                     # planenum: 모든 Output Cell의 번호를 담은 list
+        planenum = self.FindPlane("Output") + self.FindPlane("Inout")           # planenum: 모든 Output Cell의 번호를 담은 list
         if len(planenum) == 0:                                                  # Output Plane이 없을 때:
             logging.error("Couldn't find Output Plane")                         #   error 처리 (logging)
             return None                                                         #   Output 함수 종료

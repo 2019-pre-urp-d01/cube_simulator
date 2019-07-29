@@ -150,7 +150,7 @@ class Cube:
     # Shift: 입력한 plane의 모든 Bit Cell의 값을 한 번 Shift합니다.                ===== Shift 함수 =====
     def Shift(self, planenum):                                                  # planenum: Shift를 수행할 plane 번호
         binary = self.cell_bit[planenum]                                           # binary: 해당 plane의 Bit Cell의 Bit 값을 저장한 list
-        raw_bin = Plval2Raw(planenum, binary)                                      # binary의 Bit 값을 자릿값 순서대로 정렬
+        raw_bin = self.Plval2Raw(planenum, binary)                                      # binary의 Bit 값을 자릿값 순서대로 정렬
         for i in range(7):                                                      # 0부터 6까지 7번 반복
             self.raw_bin[7-i] = self.raw_bin[6-i]                               # i번쨰 값을 i+1로 이동
         self.raw_bin[0] = 0                                                     # 첫 번째 값을 0으로 설정

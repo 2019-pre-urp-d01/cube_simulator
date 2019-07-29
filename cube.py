@@ -92,7 +92,7 @@ class Cube:
     def FindPlane(self, planefunc):                                             # planefunc: 찾을 plane의 function
         planenum = list()                                                       # planenum: 결과를 찾아 저장할 list
         for ind, func in enumerate(self.cell_func):                             # ind: 인덱스, func: 역할
-            if func == planefunc.lower():
+            if func.lower() == planefunc.lower():
                 planenum.append(ind)                                            # func와 planefunc가 같으면 ind를 planenum에 추가
         return planenum                                                         # planenum list 반환
 

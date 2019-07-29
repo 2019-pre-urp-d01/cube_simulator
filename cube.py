@@ -5,7 +5,7 @@ from setup_file_io import LoadCfg
 # 0: up, 1: front, 2: right, 3: left, 4: back, 5: down
 
 # 각 Plane의 default function을 저장한 list입니다.
-DEF_FUNC = ["Input", "One", "Not", "Or", "And", "Output"]
+DEF_FUNC = ["Inout", "Xor", "And", "Not", "Shift", "Or"]
 
 # 각 Bit Cell의 absolute position에 대응하는 default place value를 저장한 list입니다.
 # [[up], [front], [right], [left], [back], [down]]
@@ -33,7 +33,7 @@ class Cube:
         self.cell_bit_plval = cell_bit_plval                                    # list: Bit Cell의 자릿값
 
         self.cell_data = np.zeros(6, dtype = "uint8")                           # list: Data Cell의 값
-        self.cell_bit  = [[1, 3, 5, 2, 4, 6, 7, 0], [2, 5, 4, 0, 1, 7, 3, 6], [3, 7, 0, 1, 2, 5, 6, 4], [4, 1, 7, 6, 2, 3, 5, 0], [5, 0, 1, 4, 6, 3, 7, 2], [6, 5, 7, 2, 3, 4, 1, 0]]                                            # list: Bit Cell의 값
+        self.cell_bit  = [[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0]]                                        # list: Bit Cell의 값
         # Rotate 디버깅 시 이 리스트를 cell_bit로 사용하세요: [[1, 3, 5, 2, 4, 6, 7, 0], [2, 5, 4, 0, 1, 7, 3, 6], [3, 7, 0, 1, 2, 5, 6, 4], [4, 1, 7, 6, 2, 3, 5, 0], [5, 0, 1, 4, 6, 3, 7, 2], [6, 5, 7, 2, 3, 4, 1, 0]]
         # Rotate 디버깅 시 이 리스트를 cell_bit로 사용하세요: [[1, 1, 1, 0, 0, 0, 1, 0], [0, 1, 0, 0, 1, 1, 1, 0], [1, 1, 0, 1, 0, 1, 0, 0], [0, 1, 1, 0, 0, 1, 1, 0], [1, 0, 1, 0, 0, 1, 1, 0], [0, 1, 1, 0, 1, 0, 1, 0]]
         self.cell_core = 0                                                      # variable: Core Cell의 값
@@ -454,13 +454,6 @@ class Cubes:
     def Execute(self, script = ""):
         script_index = 0 #매길 인덱스들
         result = ""
-        if script.count(")") != 0 and script.count("(") == script.count(")"):
-            if script.count(")") == 0:
-                logging.warning("Can't find ')', please write it.")
-                raise CoreCellCmdError_NO
-            else:
-                logging.warning("('s count and )'s count are not match, please rewrite it.")
-                raise CoreCellCmdError_COUNT
         #스크립트의 한글자 한글자씩 분석을 할 거기 때문에 인덱스로 할당함
 
         while script_index < len(script):
@@ -486,7 +479,7 @@ class Cubes:
             elif s_word == 'P': #print
                 logging.info("%s : Output"%(s_word))
                 if self.c_ascii: result += chr(self.cube.Output())
-                else: result += "%3d "%self.cube.Output()
+                else: result += "%3d "%(self.cube.Output())
 
             elif s_word == "X": logging.info("%s: Execute"%s_word); self.cube.Execute()  #execute
 
@@ -505,7 +498,7 @@ class Cubes:
                     locate = script_index+1
                     level = 0
                     # Need to converted into stack... for awesomeness
-                    while locate < len(scr):
+                    while locate < len(script):
                         if script[locate] == "(": level += 1
                         elif script[locate] == ")":
                             if level > 0: level -= 1
@@ -524,7 +517,7 @@ class Cubes:
                         elif script[locate] == "(":
                             if level > 0: level -= 1
                             else: break
-                        loc -= 1
+                        locate -= 1
                     script_index = locate
                 else:
                     logging.info("%s If close, Core Cell is Zero"%s_word)
